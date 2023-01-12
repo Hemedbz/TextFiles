@@ -130,7 +130,7 @@ class CsvFile (TextFile):
         if not self._is_identical(header1, header2):
             raise Exception()
 
-        file_path_name = self.get_file_path() + "\\" + self.get_file_name() + "_" + other.get_file_name() + \
+        file_path_name = self.get_root() + "\\" + self.get_file_name() + "_" + other.get_file_name() + \
                         self.get_file_extension()
 
         if os.path.exists(file_path_name):
