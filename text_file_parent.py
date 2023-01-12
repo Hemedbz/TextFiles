@@ -1,3 +1,6 @@
+from abc import ABC, abstractmethod
+import os
+
 class TextFile(ABC):
 
     def __init__(self, file_path: str):
