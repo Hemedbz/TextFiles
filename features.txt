@@ -1,0 +1,34 @@
+my_file = CsvFile(file_path, delimiter=',')
+    my_file.get_content()
+    my_file.isin() -> True/False
+    my_file.search() -> txt:line, csv:column_name/row, json:key+value | if not it- return None
+    my_file.count()
+    my_file.len() -> requires param. txt: char/word, csv: row/column/cells, json: keys/values
+
+    iterator, generator
+
+
+ CSV:
+      my_file.create()
+                header = [name, city, age]
+                rows = [[yael, tel aviv, 30], [hemed, tel aviv, 32]]
+     my_file.headers() -> returns list of headers
+     my_file.average() -> param: column_name
+     my_file.addrow()
+     my_file.deleterow()
+     my_file.get_column()
+     my_file.update_cell()
+     + DONE
+     for i in my_file -> i=row
+     for i in my_file.row(n) -> cell in row n
+
+
+JSON:
+    my_file.keys()
+    my_file.add_key()
+    for i in my_file | keys
+
+TXT:
+    my_file.create() | param: str
+    for i in my_file.range() | i=word
+
