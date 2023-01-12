@@ -34,7 +34,7 @@ class JsonFile (TextFile):
         # if yes: add to key -> key:[old_value, new_value]
         # if no- add key -> key:new_value
         #dump json in separate func
-
+        pass
 
     def is_in(self, val: str | int) -> bool: #TODO: H
         pass
