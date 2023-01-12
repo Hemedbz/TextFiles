@@ -46,7 +46,7 @@ class TextFile(ABC):
         pass
 
     @abstractmethod
-    def __len__(self, *args) -> int:
+    def __len__(self, *kwargs) -> int:
         pass
 
     @abstractmethod
