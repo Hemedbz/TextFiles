@@ -26,8 +26,16 @@ class TextFile(ABC):
     def get_file_extension(self):
         return os.path.splitext(self._base_name_file_path())[-1]
 
-    def get_file_path(self):
+    def get_root(self):
         return os.path.dirname(self._file_path)
+
+    def get_file_path(self):
+        return self._file_path
+
+    def is_exists(self):
+        if not os.path.exists(self._file_path):
+            return False
+        return True
 
     @abstractmethod
     def is_in(self, val: str | int) -> bool:
