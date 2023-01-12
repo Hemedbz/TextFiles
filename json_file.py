@@ -4,16 +4,17 @@ import json
 
 class JsonFile (TextFile):
 
+    def __init__(self, file_path):
+        super().__init__(file_path)
+        self._content = self.get_content()
+        self.keys = [key for key in self._content]
+        self.values = [self._content[key] for key in self._content]
+
     def _get_specific_content(self, fd):
         return json.load(fd)
 
     def _get_ext(self):
         return 'json'
-
-    def _json_file_load(self):
-        with open(self._file_path, 'r') as fd:
-            json_file_name = json.load(fd)
-        return json_file_name
 
     def is_list(self):
         if type(self._json_file_load()) is list:
@@ -35,12 +36,28 @@ class JsonFile (TextFile):
         # if no- add key -> key:new_value
         #dump json in separate func
         pass
-
-    def is_in(self, val: str | int) -> bool: #TODO: H
-        pass
-
-    def search(self, val): #TODO: H
-        pass
+    #
+    # def is_in(self, val: str | int) -> bool:
+    #     """
+    #     Checks if value in json file
+    #     :param val:
+    #     :return:
+    #     """
+    #     if val in self.values or val in self.keys:
+    #         return True
+    #     else:
+    #         return False
+    #
+    # def search(self, val):
+    #     if not self.is_in(val):
+    #         return None
+    #     ret_val = []
+    #     for val in self.keys:
+    #         ret_val.append({val:self._content[val]})
+    #     if val in self.values:
+    #         ret_val.append({self._content[n]:)
+    #     return ret_val
+# TODO: With "for key, val" H
 
     def create(self): #TODO: Y
         pass
@@ -50,3 +67,5 @@ class JsonFile (TextFile):
 
     def __len__(self):
         pass
+
+# if __name__ == '__main__':
