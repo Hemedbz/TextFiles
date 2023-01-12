@@ -6,11 +6,24 @@ class CsvFile (TextFile):
     def __init__(self, file_path, delimiter=','):
         super().__init__(file_path)
         self._delimiter = delimiter
+        self._ext = 'csv'
 
-    def _get_ext(self):
-        return 'csv'
+    def __len__(self):
+        """
+        returns (num_of_rows, num_of_columns)
+        """
+        num_of_rows = 0
+        for row in self._content:
+            num_of_rows += 1
+        for row in self._content:
+            num_of_col = len(row)
+            break
+        return (num_of_rows, num_of_col)
 
-    def _get_specific_content(self, val): #TODO: Re-implement -> H
+    def __str__(self):
+        pass #TODO: LATER
+
+    def _specific_content(self, val): #TODO: Re-implement -> H
         """
 
         :param val: wanted return, s or l -> string or list of dicts
@@ -26,11 +39,7 @@ class CsvFile (TextFile):
         #if no headers- None
         pass
 
-    def __len__(self):
-        #TODO: H
-        pass
-
-    def get_row(self, row_num):
+    def get_row(self, row_num): #TODO: Check if should redo
         with open(self._file_path, "r", newline="") as csvfile:
             read_file = csv.DictReader(csvfile, delimiter=self._delimiter)
 
@@ -69,7 +78,6 @@ class CsvFile (TextFile):
         if len(h1) == count:
             return True
         return False
-
 
     def _is_header(self, csv_line) -> bool: #TODO: Look at again and make sure is good - later
         """
@@ -153,7 +161,7 @@ class CsvFile (TextFile):
     def addrow(self, row_to_add: list): #TODO: H
         # ",".join(row_to_add)
         # add with csv.write
-    pass
+        pass
 
     def deleterow(self, row_num): #TODO: For WeWork
         pass
@@ -161,16 +169,25 @@ class CsvFile (TextFile):
     def update_cell(self, cell_column, cell_row):
         pass #TODO: For WeWork
 
-    #TODO: Read again about generators
+    def is_in(self, val: str | int) -> bool:
+        for row in self._content:
+            if val in row:
+                return True
+        return False
 
-    def is_in(self, val: str | int) -> bool: #TODO: H
-        pass
-
-    def search(self, val): #TODO: H
-        pass
-
-    def create(self): #TODO: Y
-        pass
+    def search(self, val):
+        """
+        finds all appearances of parameter
+        :param val to search
+        :return: []list of tuples(row_num, column_num)
+        """
+        locations = []
+        for index, row in enumerate(self._content):
+            if val in row:
+                for i, v in enumerate(row):
+                    if v == val
+                    locations.append((index, i))
+        return locations
 
     def count(self, val) -> int: #TODO: Y
         pass

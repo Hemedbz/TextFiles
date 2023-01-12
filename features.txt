@@ -25,7 +25,6 @@ Methods for all text files:
      for i in my_file -> i=row
      for i in my_file.row(n) -> cell in row n
 
-
 JSON:
     self.keys()
     self.add_key()
