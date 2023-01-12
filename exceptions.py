@@ -7,3 +7,6 @@ class NoFile(TextFileExceptions):
 class InvalidInputError(TextFileExceptions):
     def __init__(self, val):
         super().__init__(f"{val} not in..")
+
+class FileNotMatchError(TextFileExceptions):
+    pass
