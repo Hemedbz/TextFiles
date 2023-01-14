@@ -25,13 +25,13 @@ class JsonFile (TextFile):
         #dump json in separate func
         pass
 
-    def is_in(self, val: str | int) -> bool:
+    def __contains__(self, item):
         """
         Checks if value in json file
         :param val:
         :return:
         """
-        if val in self.values or val in self.keys:
+        if item in self.values or val in self.keys:
             return True
         else:
             return False
@@ -47,6 +47,7 @@ class JsonFile (TextFile):
                 if param in i:
                     data.append(i)
         return data
+    #TODO: Deep search in sub dict - H
 
     def count(self, val) -> int:
         return len(self.search(val))

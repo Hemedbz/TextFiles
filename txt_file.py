@@ -33,9 +33,10 @@ class TxtFile(TextFile):
         :return: tuple with number of characters and number of words
         """
         return (len(self._content), len(self._words))
+    #TODO: FIX len must return int, cannot return tuple- breaking convention, mypy will yell at us - H
 
-    def is_in(self, val: str | int) -> bool:
-        if val in self._content:
+    def __contains__ (self, item: str | int) -> bool:
+        if item in self._content:
             return True
         else:
             return False

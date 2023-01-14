@@ -27,7 +27,7 @@ Methods for all text files:
 
 JSON:
     self.keys()
-    self.add_key()
+    self.add_data()
 
     for generator
     for i in my_file | keys

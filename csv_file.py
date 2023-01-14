@@ -19,6 +19,7 @@ class CsvFile (TextFile):
             num_of_col = len(row)
             break
         return (num_of_rows, num_of_col)
+    #TODO: FIX len must return int, cannot return tuple- breaking convention, mypy will yell at us
 
     def __str__(self):
         pass #TODO: LATER
@@ -169,9 +170,9 @@ class CsvFile (TextFile):
     def update_cell(self, cell_column, cell_row):
         pass #TODO: For WeWork
 
-    def is_in(self, val: str | int) -> bool:
+    def __contains__(self, item):
         for row in self._content:
-            if val in row:
+            if item in row:
                 return True
         return False
 

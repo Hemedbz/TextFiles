@@ -1,4 +1,6 @@
-with open ('features.txt', 'r') as fh:
-    content = fh.readlines()
+# import unittest
+# import csv, json, os
+#
+# class Tests(unittest.TestCase):
+#     def test_add(self):
 
-    print(content)
