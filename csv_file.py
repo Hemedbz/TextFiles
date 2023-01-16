@@ -11,7 +11,7 @@ class CsvFile (TextFile):
         :param header: The user insert True if there is a header else False
         """
         super().__init__(file_path)
-        self.header = header
+        self._header = header
         self._delimiter = delimiter
         self._ext = 'csv'
 
@@ -40,19 +40,37 @@ class CsvFile (TextFile):
     def __str__(self):
         pass #TODO: LATER think about what to write here (file name, type, headers, number f rows, date modified- check how we get it)
 
-    def _specific_content(self, val): #TODO: Re-implement -> H
+    def _csv_list(self, fd):
         """
+        :return: csv as list of lists
+        """
+        ret_val = []
+        for row in csv.reader(fd, delimiter=self._delimiter):
+            ret_val.append(row)
+        return ret_val
 
-        :param val: wanted return, s or l -> string or list of dicts
-        :return: s/l
+    def _csv_dict(self, fd):
+        """
+        :return: csv as list of dicts
         """
         ret_val = []
         for row in csv.DictReader(fd, delimiter=self._delimiter):
             ret_val.append(row)
         return ret_val
 
+    def _specific_content(self, fd, dict_type=False):  # TODO: add decorators
+        """
+
+        :param dict_type: wanted return, False or True -> list of lists or list of dicts
+        :return: s/l
+        """
+        if not dict_type:
+            return self._csv_list(fd)
+        return self._csv_dict(fd)
+
+
     def get_headers(self) -> list | None:
-        if self.header:
+        if self._header:
             for row in self.content:
                 return row
         return None
@@ -104,16 +122,16 @@ class CsvFile (TextFile):
             return True
         return False
 
-    def _is_header(self, csv_line) -> bool: #TODO: Look at again and make sure is good - Y
-        """
-        ensures first row is header
-        """
-        first_line = "".join(csv_line)
-        first_line = "".join(first_line.split(" "))
-        first_line = "".join(first_line.split(self._delimiter))
-        if first_line.isalpha():
-            return True
-        return False
+    # def _is_header(self, csv_line) -> bool: #TODO: Look at again and make sure is good - Y
+    #     """
+    #     ensures first row is header
+    #     """
+    #     first_line = "".join(csv_line)
+    #     first_line = "".join(first_line.split(" "))
+    #     first_line = "".join(first_line.split(self._delimiter))
+    #     if first_line.isalpha():
+    #         return True
+    #     return False
 
 #TODO: Go over both functions and shorten - Y - later
     # def _get_column_name_by_num(self, r, column_n):
@@ -146,7 +164,22 @@ class CsvFile (TextFile):
 
 
     def add_header(self, header: list):
-        pass
+        """
+        Add header to csv file without header
+        :param header: list of str
+        """
+        if not self._header:
+            dummy_file = os.path.join(self.root, self.file_name + '.bak')
+            with open(self.get_file_path(), 'r', newline="") as r_cv, open(dummy_file, 'w', newline="") as w_cv:
+                writer = csv.writer(w_cv)
+                writer.writerow(header)
+                reader = csv.reader(r_cv, delimiter=self._delimiter)
+                for row in reader:
+                    writer.writerow(row)
+            os.remove(self.get_file_path())
+            os.rename(dummy_file, self.get_file_path())
+        else:
+            raise Exception()
 
     def __add__(self, other):
         """
@@ -159,16 +192,17 @@ class CsvFile (TextFile):
             raise Exception() #TODO: Rename all exceptions: at end who cares now
         # self.check_type(other)
 
-        header1, header2 = self.headers(), other.headers()
+        header1, header2 = self.get_headers(), other.get_headers()
 
-        if not self._is_header(header1) and not other._is_header(header2):
+        if header1 is None or header2 is None:
             raise Exception()
 
         if not self._is_identical(header1, header2):
             raise Exception()
 
-        file_path_name = self.get_root() + "\\" + self.get_file_name() + "_" + other.get_file_name() + \
-                        self.get_file_extension()
+        file_path_name = os.path.join(self.root, self.file_name + '_' + other.file_name + self.get_extension())
+        # file_path_name = self.root() + "\\" + self.get_file_name() + "_" + other.get_file_name() + \
+        #                 self.get_extension()
 
         if os.path.exists(file_path_name):
             raise Exception()
@@ -176,13 +210,12 @@ class CsvFile (TextFile):
         with open(file_path_name, "w", newline="") as csv_f:
             writer = csv.DictWriter(csv_f, fieldnames=header1)
             writer.writeheader()
-        # [{name: bla, age: bla},{name: bla, age: bla}]
+
             for row in self.get_content():
                 writer.writerow(row)
             for row in other.get_content():
                 writer.writerow(row)
 
-        return True
 
     def average(self, column):
         pass #TODO: Later
