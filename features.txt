@@ -1,6 +1,5 @@
 Parent abstract class: TextFile
 sub-classes: CsvFile, JsonFile, TxtFile
-separate class: Create
 Threadsafe- to add in end
 
 Methods for all text files:

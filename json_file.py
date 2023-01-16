@@ -63,6 +63,9 @@ class JsonFile (TextFile):
             case 'None':
                 self._add_data_none(new_value)
 
+        self._dump_content()
+
+    def _dump_content(self):
         with open(self._file_path, 'w'):
             json.dump(self.content)
 
@@ -74,8 +77,11 @@ class JsonFile (TextFile):
     def _add_data_dict(self, key, new_value):
         if key not in self.content:
             self.content[key] = new_value
-        elif key in data:
-            self.content[key] = list(data[key]).append(new_value)
+        elif key in self.content:
+            if type(self.content[key]) == 'list':
+                self.content[key].append(new_value)
+            else:
+                self.content[key] = [self.content[key], new_value]
 
     def _add_data_list(self, new_value):
         self.content.append(new_value)
@@ -102,7 +108,7 @@ class JsonFile (TextFile):
     def _search_dict(self, param, dictionary):
         findings = []
         for key, value in dictionary.items():
-            if param == key or data in value:
+            if param == key or param in value:
                 findings.append({key: value})
             elif isinstance(value, dict):
                 findings.extend(self._search_dict(param, value))
@@ -116,6 +122,7 @@ class JsonFile (TextFile):
             elif isinstance(i, dict):
                 findings.append(self._search_dict(param, i))
         return findings
+    #TODO: Add deep search in inner list - H
 
     def _search_identical(self, param):
         if param == self.content:
