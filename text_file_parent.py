@@ -12,6 +12,7 @@ class TextFile(ABC):
         if self._ext() != self.get_extension():
             raise TypeError
 
+        # TODO: organize getter setter - Y
         self._content = self.get_content()
         self.file_size = os.stat(self._file_path).st_size
         self.root = os.path.dirname(self._file_path)
@@ -26,12 +27,12 @@ class TextFile(ABC):
         pass
 
     @abstractmethod
-    def _specific_content(self, fd):
+    def _specific_content(self, fd, *args):
         pass
 
-    def get_content(self):
+    def get_content(self, *args):
         with open(self._file_path, 'r') as fd:
-            self._content = self._specific_content(fd)
+            self._content = self._specific_content(fd, *args)
         return self._content
 
     def get_extension(self):
@@ -41,15 +42,21 @@ class TextFile(ABC):
         return self._file_path
 
     @abstractmethod
-    def is_in(self, val: str | int) -> bool:
-        pass
-
-    @abstractmethod
     def search(self, val):
         pass
 
     @abstractmethod
     def count(self, val) -> int:
         pass
+
+    @property
+    def content(self):
+        return self._content
+
+    # @content.setter
+    # def content(self, value):
+    #     pass
+
+
 
     #TODO: generator in iter (for each class) - Y

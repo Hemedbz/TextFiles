@@ -3,15 +3,22 @@ import csv, os
 
 class CsvFile (TextFile):
 
-    def __init__(self, file_path, delimiter=','):
+    def __init__(self, file_path, delimiter=',', header=True ):
+        """
+
+        :param file_path:
+        :param delimiter:
+        :param header: The user insert True if there is a header else False
+        """
         super().__init__(file_path)
+        self.header = header
         self._delimiter = delimiter
         self._ext = 'csv'
 
     def __len__(self):
         """
 
-        :return: number of rows in file
+        :return: number of rows in file without header #TODO: takeout headers
         """
         num_of_rows = 0
         for row in self._content:
@@ -45,10 +52,11 @@ class CsvFile (TextFile):
             ret_val.append(row)
         return ret_val
 
-    def headers(self) -> list:
-        #dict reader- 1st row - keys #TODO- Y
-        #if no headers- None
-        pass
+    def get_headers(self) -> list | None:
+        if self.header:
+            for row in self.content:
+                return row
+        return None
 
     def get_row(self, row_num): #TODO: Check if should redo -H
         with open(self._file_path, "r", newline="") as csvfile:
@@ -75,6 +83,7 @@ class CsvFile (TextFile):
             # if the row and column out of range
             if len(csv_list) < row_num - 1 and len(csv_list[0]) < column_num:
                 # raise ValueError (out of range)
+                pass
 
             return csv_list[row_num][column_num - 1]
 
@@ -135,6 +144,10 @@ class CsvFile (TextFile):
     #         for item in csv_obj:
     #             clu_info.append(item[clu_name])
     #         return clu_info
+
+
+    def add_header(self, header: list):
+        pass
 
     def __add__(self, other):
         """
@@ -203,9 +216,15 @@ class CsvFile (TextFile):
         for index, row in enumerate(self._content):
             if val in row:
                 for i, v in enumerate(row):
-                    if v == val
-                    locations.append((index, i))
+                    if v == val:
+                        locations.append((index, i))
         return locations
 
     def count(self, val) -> int:
         return len(self.search(val))
+
+
+
+
+
+

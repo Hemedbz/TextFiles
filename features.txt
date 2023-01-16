@@ -14,6 +14,7 @@ Methods for all text files:
 
 
     iterator, generator
+    add args checker decorator to get_content
 
 
  CSV:
