@@ -16,3 +16,12 @@ class Create:
 
     def c_json(self):
         pass
+
+#TODO: Read about design pattern "factory" H&Y
+# under the file classes:
+#     @staticmethod
+#     def from_path():
+#             #אולי בקלאס הראשי
+#         if "csv":
+#             create csv
+#             return Csv

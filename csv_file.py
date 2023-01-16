@@ -19,7 +19,8 @@ class CsvFile (TextFile):
             num_of_col = len(row)
             break
         return (num_of_rows, num_of_col)
-    #TODO: FIX len must return int, cannot return tuple- breaking convention, mypy will yell at us
+    #TODO: FIX len must return int, cannot return tuple- breaking convention, mypy will yell at us- def shape
+
 
     def __str__(self):
         pass #TODO: LATER

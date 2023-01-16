@@ -9,7 +9,7 @@ class JsonFile (TextFile):
         self._ext = 'json'
         self.keys = [key for key in self._content]
         self.values = [self._content[key] for key in self._content]
-        self.type = type(self._content)
+        self.type = type(self._content) #TODO: Think of how to refactor code if not dict and not list - H&Y
 
     def _specific_content(self, fd):
         return json.load(fd)
@@ -18,20 +18,23 @@ class JsonFile (TextFile):
         pass
 
     def add_data(self, key, new_value): #TODO: H
-        #load json
-        #check if key exists
-        # if yes: add to key -> key:[old_value, new_value]
-        # if no- add key -> key:new_value
-        #dump json in separate func
-        pass
+        if self.type = 'dict':
+            with open(self._file_path, 'r') as fh:
+                data = json.load(fh)
+            if key not in data: data[key] = new_value
+            elif key in data: data[key] = list(data[key]).append(new_value)
+            with open(self._file_path, 'w'):
+                json.dump(data)
+        elif self.type = 'list':
+            pass
 
     def __contains__(self, item):
         """
         Checks if value in json file
-        :param val:
+        :param item
         :return:
         """
-        if item in self.values or val in self.keys:
+        if item in self.values or item in self.keys:
             return True
         else:
             return False
