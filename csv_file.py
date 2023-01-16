@@ -18,9 +18,12 @@ class CsvFile (TextFile):
     def __len__(self):
         """
 
-        :return: number of rows in file without header #TODO: takeout headers
+        :return: number of rows in file without header
         """
-        num_of_rows = 0
+        if self.header == True:
+            num_of_rows = -1
+        else:
+            num_of_rows = 0
         for row in self._content:
             num_of_rows += 1
         return num_of_rows
@@ -75,7 +78,7 @@ class CsvFile (TextFile):
                 return row
         return None
 
-    def get_row(self, row_num): #TODO: Check if should redo -H
+    def get_row(self, row_num):  # TODO: Check if should redo -H
         with open(self._file_path, "r", newline="") as csvfile:
             read_file = csv.DictReader(csvfile, delimiter=self._delimiter)
 
@@ -84,7 +87,7 @@ class CsvFile (TextFile):
                 counter += 1
                 if counter == row_num:
                     return item
-        raise Exception()#out of range
+        raise Exception()  # out of range
 
     def get_cell(self, row_num, column_num):
         """
@@ -189,7 +192,7 @@ class CsvFile (TextFile):
         """
 
         if not isinstance(other, CsvFile):
-            raise Exception() #TODO: Rename all exceptions: at end who cares now
+            raise Exception()  # TODO: Rename all exceptions: at end who cares now
         # self.check_type(other)
 
         header1, header2 = self.get_headers(), other.get_headers()
@@ -216,21 +219,23 @@ class CsvFile (TextFile):
             for row in other.get_content():
                 writer.writerow(row)
 
+        return True
 
     def average(self, column):
-        pass #TODO: Later
-    #add aversge by row range
+        pass  # TODO: Later
 
-    def addrow(self, row_to_add: list): #TODO: For WeWork
+    # add aversge by row range
+
+    def addrow(self, row_to_add: list):  # TODO: For WeWork
         # ",".join(row_to_add)
         # add with csv.write
         pass
 
-    def deleterow(self, row_num): #TODO: For WeWork
+    def deleterow(self, row_num):  # TODO: For WeWork
         pass
 
     def update_cell(self, cell_column, cell_row):
-        pass #TODO: For WeWork
+        pass  # TODO: For WeWork
 
     def __contains__(self, item):
         for row in self._content:
