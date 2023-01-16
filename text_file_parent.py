@@ -52,4 +52,4 @@ class TextFile(ABC):
     def count(self, val) -> int:
         pass
 
-    #TODO: Read again about generators- both of us
+    #TODO: generator in iter (for each class) - Y

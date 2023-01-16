@@ -9,7 +9,7 @@ class JsonFile (TextFile):
         self._ext = 'json'
         self.keys = [key for key in self._content]
         self.values = [self._content[key] for key in self._content]
-        self.type = type(self._content) #TODO: Think of how to refactor code if not dict and not list - H&Y
+        self.type = type(self._content) #TODO: Think of how to refactor code if not dict and not list - Ask Valeria
 
     def _specific_content(self, fd):
         return json.load(fd)
@@ -18,6 +18,7 @@ class JsonFile (TextFile):
         pass
 
     def add_data(self, key, new_value): #TODO: H
+
         if self.type = 'dict':
             with open(self._file_path, 'r') as fh:
                 data = json.load(fh)
@@ -25,6 +26,7 @@ class JsonFile (TextFile):
             elif key in data: data[key] = list(data[key]).append(new_value)
             with open(self._file_path, 'w'):
                 json.dump(data)
+
         elif self.type = 'list':
             pass
 
@@ -51,6 +53,12 @@ class JsonFile (TextFile):
                     data.append(i)
         return data
     #TODO: Deep search in sub dict - H
+
+    # def search(self):
+    #     if type == dict
+    #         return search_dict()
+    # match case
+
 
     def count(self, val) -> int:
         return len(self.search(val))

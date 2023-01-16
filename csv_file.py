@@ -10,6 +10,16 @@ class CsvFile (TextFile):
 
     def __len__(self):
         """
+
+        :return: number of rows in file
+        """
+        num_of_rows = 0
+        for row in self._content:
+            num_of_rows += 1
+        return num_of_rows
+
+    def shape(self):
+        """
         returns (num_of_rows, num_of_columns)
         """
         num_of_rows = 0
@@ -19,11 +29,10 @@ class CsvFile (TextFile):
             num_of_col = len(row)
             break
         return (num_of_rows, num_of_col)
-    #TODO: FIX len must return int, cannot return tuple- breaking convention, mypy will yell at us- def shape
 
 
     def __str__(self):
-        pass #TODO: LATER
+        pass #TODO: LATER think about what to write here (file name, type, headers, number f rows, date modified- check how we get it)
 
     def _specific_content(self, val): #TODO: Re-implement -> H
         """
@@ -41,7 +50,7 @@ class CsvFile (TextFile):
         #if no headers- None
         pass
 
-    def get_row(self, row_num): #TODO: Check if should redo
+    def get_row(self, row_num): #TODO: Check if should redo -H
         with open(self._file_path, "r", newline="") as csvfile:
             read_file = csv.DictReader(csvfile, delimiter=self._delimiter)
 
@@ -50,16 +59,22 @@ class CsvFile (TextFile):
                 counter += 1
                 if counter == row_num:
                     return item
-        raise Exception()
+        raise Exception()#out of range
 
     def get_cell(self, row_num, column_num):
+        """
+
+        :param row_num:
+        :param column_num:
+        :return: content of table cell
+        """
         with open(self._file_path, 'r', newline="") as csvf:
             read_f = csv.reader(csvf, delimiter=self._delimiter)
             csv_list = list(read_f)
 
             # if the row and column out of range
             if len(csv_list) < row_num - 1 and len(csv_list[0]) < column_num:
-                return False
+                # raise ValueError (out of range)
 
             return csv_list[row_num][column_num - 1]
 
@@ -81,7 +96,7 @@ class CsvFile (TextFile):
             return True
         return False
 
-    def _is_header(self, csv_line) -> bool: #TODO: Look at again and make sure is good - later
+    def _is_header(self, csv_line) -> bool: #TODO: Look at again and make sure is good - Y
         """
         ensures first row is header
         """
@@ -159,8 +174,9 @@ class CsvFile (TextFile):
 
     def average(self, column):
         pass #TODO: Later
+    #add aversge by row range
 
-    def addrow(self, row_to_add: list): #TODO: H
+    def addrow(self, row_to_add: list): #TODO: For WeWork
         # ",".join(row_to_add)
         # add with csv.write
         pass
@@ -191,5 +207,5 @@ class CsvFile (TextFile):
                     locations.append((index, i))
         return locations
 
-    def count(self, val) -> int: #TODO: Y
-        pass
+    def count(self, val) -> int:
+        return len(self.search(val))

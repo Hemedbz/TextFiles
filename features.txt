@@ -5,26 +5,36 @@ Threadsafe- to add in end
 
 Methods for all text files:
     self.get_content()
-    self.isin() -> bool
     self.search() -> txt:line, csv:column_name/row, json:key+value | if not it- return None
     self.count()
     self.len() -> requires param. txt: char/word, csv: row/column/cells, json: keys/values
     __add__
+    __contains__
+    __len__
+
 
     iterator, generator
 
 
  CSV:
      self.headers() -> [header for header in headers]
-     self.average() -> param: column_name -> int
      self.addrow()
      self.deleterow()
      self.get_column()
      self.update_cell()
 
-     for generator:
+     (for generator:
      for i in my_file -> i=row
-     for i in my_file.row(n) -> cell in row n
+     for i in my_file.row(n) -> cell in row n)
+
+     # import csv to Postgresql database
+
+     math functions (if all column int/float):
+     self.average() -> param: column_name, rows range -> float
+     self.sum() -> column_name, rows range -> float
+
+
+
 
 JSON:
     self.keys()

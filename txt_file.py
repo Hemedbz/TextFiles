@@ -7,7 +7,7 @@ class TxtFile(TextFile):
     def __init__(self, file_path):
         super().__init__(file_path)
         self._content = self.get_content()
-        self._words = self._content.split()
+        self._words = self.get_words()
         self.lines = self._content.readlines()
         self._ext = 'txt'
 
@@ -30,10 +30,12 @@ class TxtFile(TextFile):
 
     def __len__(self):
         """
-        :return: tuple with number of characters and number of words
+        :return: number of words
         """
-        return (len(self._content), len(self._words))
-    #TODO: FIX len must return int, cannot return tuple- breaking convention, mypy will yell at us - H
+        return len(self._words) #TODO: Take care of word count (-, : etc) - H
+
+    def shape(self):
+
 
     def __contains__ (self, item: str | int) -> bool:
         if item in self._content:
