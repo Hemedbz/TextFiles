@@ -1,9 +1,10 @@
 from text_file_parent import TextFile
 import csv, os
 
-class CsvFile (TextFile):
 
-    def __init__(self, file_path, delimiter=',', header=True ):
+class CsvFile(TextFile):
+
+    def __init__(self, file_path, delimiter=',', header=True):
         """
 
         :param file_path:
@@ -18,9 +19,12 @@ class CsvFile (TextFile):
     def __len__(self):
         """
 
-        :return: number of rows in file without header #TODO: takeout headers
+        :return: number of rows in file without header
         """
-        num_of_rows = 0
+        if self.header == True:
+            num_of_rows = -1
+        else:
+            num_of_rows = 0
         for row in self._content:
             num_of_rows += 1
         return num_of_rows
@@ -38,9 +42,9 @@ class CsvFile (TextFile):
         return (num_of_rows, num_of_col)
 
     def __str__(self):
-        pass #TODO: LATER think about what to write here (file name, type, headers, number f rows, date modified- check how we get it)
+        pass  # TODO: LATER think about what to write here (file name, type, headers, number f rows, date modified- check how we get it)
 
-    def _specific_content(self, val): #TODO: Re-implement -> H
+    def _specific_content(self, val):  # TODO: Re-implement -> H
         """
 
         :param val: wanted return, s or l -> string or list of dicts
@@ -57,7 +61,7 @@ class CsvFile (TextFile):
                 return row
         return None
 
-    def get_row(self, row_num): #TODO: Check if should redo -H
+    def get_row(self, row_num):  # TODO: Check if should redo -H
         with open(self._file_path, "r", newline="") as csvfile:
             read_file = csv.DictReader(csvfile, delimiter=self._delimiter)
 
@@ -66,7 +70,7 @@ class CsvFile (TextFile):
                 counter += 1
                 if counter == row_num:
                     return item
-        raise Exception()#out of range
+        raise Exception()  # out of range
 
     def get_cell(self, row_num, column_num):
         """
@@ -104,7 +108,7 @@ class CsvFile (TextFile):
             return True
         return False
 
-    def _is_header(self, csv_line) -> bool: #TODO: Look at again and make sure is good - Y
+    def _is_header(self, csv_line) -> bool:  # TODO: Look at again and make sure is good - Y
         """
         ensures first row is header
         """
@@ -115,7 +119,7 @@ class CsvFile (TextFile):
             return True
         return False
 
-#TODO: Go over both functions and shorten - Y - later
+    # TODO: Go over both functions and shorten - Y - later
     # def _get_column_name_by_num(self, r, column_n):
     #     line = next(r)
     #     if self._is_header(line):
@@ -144,7 +148,6 @@ class CsvFile (TextFile):
     #             clu_info.append(item[clu_name])
     #         return clu_info
 
-
     def add_header(self, header: list):
         pass
 
@@ -156,7 +159,7 @@ class CsvFile (TextFile):
         """
 
         if not isinstance(other, CsvFile):
-            raise Exception() #TODO: Rename all exceptions: at end who cares now
+            raise Exception()  # TODO: Rename all exceptions: at end who cares now
         # self.check_type(other)
 
         header1, header2 = self.headers(), other.headers()
@@ -168,7 +171,7 @@ class CsvFile (TextFile):
             raise Exception()
 
         file_path_name = self.get_root() + "\\" + self.get_file_name() + "_" + other.get_file_name() + \
-                        self.get_file_extension()
+                         self.get_file_extension()
 
         if os.path.exists(file_path_name):
             raise Exception()
@@ -176,7 +179,7 @@ class CsvFile (TextFile):
         with open(file_path_name, "w", newline="") as csv_f:
             writer = csv.DictWriter(csv_f, fieldnames=header1)
             writer.writeheader()
-        # [{name: bla, age: bla},{name: bla, age: bla}]
+            # [{name: bla, age: bla},{name: bla, age: bla}]
             for row in self.get_content():
                 writer.writerow(row)
             for row in other.get_content():
@@ -185,19 +188,20 @@ class CsvFile (TextFile):
         return True
 
     def average(self, column):
-        pass #TODO: Later
-    #add aversge by row range
+        pass  # TODO: Later
 
-    def addrow(self, row_to_add: list): #TODO: For WeWork
+    # add aversge by row range
+
+    def addrow(self, row_to_add: list):  # TODO: For WeWork
         # ",".join(row_to_add)
         # add with csv.write
         pass
 
-    def deleterow(self, row_num): #TODO: For WeWork
+    def deleterow(self, row_num):  # TODO: For WeWork
         pass
 
     def update_cell(self, cell_column, cell_row):
-        pass #TODO: For WeWork
+        pass  # TODO: For WeWork
 
     def __contains__(self, item):
         for row in self._content:
@@ -221,9 +225,3 @@ class CsvFile (TextFile):
 
     def count(self, val) -> int:
         return len(self.search(val))
-
-
-
-
-
-
