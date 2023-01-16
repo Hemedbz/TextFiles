@@ -81,20 +81,23 @@ class JsonFile (TextFile):
         self.content.append(new_value)
 
     def _add_data_str(self, new_value):
-        self.content = self.content+f"\n" \
+        if type(new_value) == 'str':
+            self._content = self._content+f"\n" \
                                     f"{new_value}"
+        else:
+            self._content = [self._content, new_value]
 
     def _add_data_num(self, new_value):
         if type(new_value) in ['int', 'float']:
-            self.content += new_value
+            self._content += new_value
         else:
-            self.content = [self.content, new_value]
+            self._content = [self._content, new_value]
 
     def _add_data_bool(self, new_value):
-        self.content = [self.content, new_value]
+        self._content = [self._content, new_value]
 
     def _add_data_none(self, new_value):
-        self.content = new_value
+        self._content = new_value
 
     def _search_dict(self, param, dictionary):
         findings = []
