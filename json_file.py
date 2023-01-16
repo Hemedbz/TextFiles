@@ -1,7 +1,6 @@
 from text_file_parent import TextFile
 import json
 
-
 class JsonFile (TextFile):
 
     def __init__(self, file_path):
@@ -17,19 +16,6 @@ class JsonFile (TextFile):
     def get_keys(self):
         pass
 
-    def add_data(self, key, new_value): #TODO: H
-
-        if self.type = 'dict':
-            with open(self._file_path, 'r') as fh:
-                data = json.load(fh)
-            if key not in data: data[key] = new_value
-            elif key in data: data[key] = list(data[key]).append(new_value)
-            with open(self._file_path, 'w'):
-                json.dump(data)
-
-        elif self.type = 'list':
-            pass
-
     def __contains__(self, item):
         """
         Checks if value in json file
@@ -42,23 +28,29 @@ class JsonFile (TextFile):
             return False
 
     def search(self, param):
-        data = []
         if self.type == 'dict':
-            for key, value in self._content:
-                if param == key or data in value:
-                    data.append({key:value})
+            return self._search_dict(param, self.content)
         elif self.type == 'list':
-            for i in self._content:
-                if param in i:
-                    data.append(i)
-        return data
-    #TODO: Deep search in sub dict - H
+            return self._search_list(param)
+        elif self.type == 'str':
+            return self._search_str(param)
+        elif self.type in ['None', 'bool', 'int', 'float']:
+            raise Exception #cannot search in this types
 
-    # def search(self):
-    #     if type == dict
-    #         return search_dict()
-    # match case
-
+    def add_data(self, new_value, key=None):
+        if self.type == 'dict':
+            return self._add_data_dict(key, new_value)
+        elif self.type == 'list':
+            return self._add_data_list(new_value)
+        elif self.type == 'int' or if self.type == 'float':
+            return self._add_data_num(new_value)
+        elif self.type == 'str':
+            return self._add_data_str(new_value)
+        elif self.type == 'bool':
+            return self._add_data_bool(new_value)
+        elif self.type == 'None':
+            return self._add_data_none(new_value)
+        # TODO: Change to match case H
 
     def count(self, val) -> int:
         return len(self.search(val))

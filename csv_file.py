@@ -37,7 +37,6 @@ class CsvFile (TextFile):
             break
         return (num_of_rows, num_of_col)
 
-
     def __str__(self):
         pass #TODO: LATER think about what to write here (file name, type, headers, number f rows, date modified- check how we get it)
 
