@@ -74,14 +74,89 @@ def _add_data_bool(new_value):
     global content
     content = [content, new_value]
 
-
-def _add_data_none(new_value):
-    content = new_value
-
 def _dump_content():
     with open(file_path, 'w') as fd:
         json.dump(content, fd)
+def _add_data_none(new_value):
+    content = new_value
 
+if __name__ == '__main__':
+
+    def add_header(header: list):
+        file = 'text-Copy'
+        dummy_file = os.path.join('D:\\Full_Stack_Python\\C10\\files\\', file + '.bak')
+        with open('D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv', 'r', newline="") as r_cv, open(dummy_file, 'w',
+                                                                                                     newline="") as w_cv:
+            writer = csv.writer(w_cv)
+            writer.writerow(header)
+            reader = csv.reader(r_cv, delimiter=',')
+            for row in reader:
+                writer.writerow(row)
+        os.remove('D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv')
+        os.rename(dummy_file, 'D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv')
+
+
+    if __name__ == '__main__':
+        with open('D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv', 'r') as cv:
+            f = csv.reader(cv, delimiter=',')
+            print(f)
+            for row in f:
+                print(row)
+
+        add_header(['Identifier', 'First name', 'Last name'])
+
+        with open('D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv', 'r') as cv:
+            f = csv.reader(cv, delimiter=',')
+            print(f)
+            for row in f:
+                print(row)
+
+
+        def words(text):
+            to_remove = []
+            list_of_words = text.split()
+            for i in range(0, len(list_of_words)):
+                if list_of_words[i][-1] == "-":
+                    list_of_words[i] = list_of_words[i][0:-1] + list_of_words[i + 1]
+                    to_remove.append(list_of_words[i + 1])
+            for word in to_remove:
+                list_of_words.remove(word)
+            return list_of_words
+
+
+        with open(r"C:\Users\hemed\Documents\test.txt", "r") as fh:
+            text = fh.read()
+            print(words(text))
+
+    with open('D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv', 'r') as cv:
+        f = csv.reader(cv, delimiter=',')
+        print(f)
+        for row in f:
+            print(row)
+
+
+    with open('D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv', 'r') as cv:
+        f = csv.reader(cv, delimiter=',')
+        print(f)
+        for row in f:
+            print(row)
+
+
+    def words(text):
+        to_remove = []
+        list_of_words = text.split()
+        for i in range(0, len(list_of_words)):
+            if list_of_words[i][-1] == "-":
+                list_of_words[i] = list_of_words[i][0:-1] + list_of_words[i + 1]
+                to_remove.append(list_of_words[i + 1])
+        for word in to_remove:
+            list_of_words.remove(word)
+        return list_of_words
+
+
+    with open(r"C:\Users\hemed\Documents\test.txt", "r") as fh:
+        text = fh.read()
+        print(words(text))
 
 def add_data(new_value, key=None, create_list=False):
     # self.get_content()
