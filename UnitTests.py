@@ -93,3 +93,20 @@ if __name__ == '__main__':
         print(f)
         for row in f:
             print(row)
+
+
+    def words(text):
+        to_remove = []
+        list_of_words = text.split()
+        for i in range(0, len(list_of_words)):
+            if list_of_words[i][-1] == "-":
+                list_of_words[i] = list_of_words[i][0:-1] + list_of_words[i + 1]
+                to_remove.append(list_of_words[i + 1])
+        for word in to_remove:
+            list_of_words.remove(word)
+        return list_of_words
+
+
+    with open(r"C:\Users\hemed\Documents\test.txt", "r") as fh:
+        text = fh.read()
+        print(words(text))

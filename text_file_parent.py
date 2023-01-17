@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import os
 from exceptions import *
+import time
+
 
 class TextFile(ABC):
 
@@ -18,6 +20,8 @@ class TextFile(ABC):
         self.root = os.path.dirname(self._file_path)
         self.base_name = os.path.basename(self._file_path)
         self.file_name = os.path.splitext(self.base_name)[0]
+        self._creation_t = self.get_creation_time()
+        self._last_modified_t = self._update_last_modified()
 
     def __str__(self):
         return str(self._content)
@@ -57,6 +61,31 @@ class TextFile(ABC):
     # def content(self, value):
     #     pass
 
+    def get_creation_time(self):
+        return os.path.getctime(self._file_path)
 
+    @property
+    def creation_time(self):
+        return self._creation_t
+
+    @creation_time.getter
+    def creation_time(self):
+        return time.ctime(self._creation_t)
+
+    def _update_last_modified(self):
+        return os.path.getmtime(self._file_path)
+
+    @property
+    def last_modified(self):
+        return self._last_modified_t
+
+    @last_modified.getter
+    def last_modified(self):
+        return time.ctime(self._last_modified_t)
+
+    @last_modified.setter
+    def last_modified(self):
+        self._update_last_modified()
+        return self._last_modified_t
 
     #TODO: generator in iter (for each class) - Y

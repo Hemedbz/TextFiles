@@ -32,7 +32,7 @@ class JsonFile (TextFile):
             case 'dict':
                 self._search_dict(param, dictionary=self.content)
             case 'list':
-                self._search_list(param)
+                self._search_list(param, l=self.content)
             case 'int':
                 self._search_identical(param)
             case 'float':
@@ -66,11 +66,14 @@ class JsonFile (TextFile):
         self._dump_content()
 
     def _dump_content(self):
-        with open(self._file_path, 'w'):
-            json.dump(self.content)
+        with open(self._file_path, 'w') as fd:
+            json.dump(self.content, fd)
 
     def count(self, val):
         return len(self.search(val))
+
+    def delete_data(self, data):
+        pass #TODO:
 
     # sub functions by json type
 
@@ -114,15 +117,17 @@ class JsonFile (TextFile):
                 findings.extend(self._search_dict(param, value))
         return findings
 
-    def _search_list(self, param):
+    def _search_list(self, value, l):
         findings = []
-        for i in self.content:
-            if i == param:
+        for i in l:
+            if i == value:
                 findings.append(i)
             elif isinstance(i, dict):
-                findings.append(self._search_dict(param, i))
+                findings.append(self._search_dict(value, i))
+            elif isinstance(i, list):
+                findings.extend(self._search_list(value, i))
         return findings
-    #TODO: Add deep search in inner list - H
+
 
     def _search_identical(self, param):
         if param == self.content:
