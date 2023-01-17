@@ -53,9 +53,9 @@ class TextFile(ABC):
     def content(self):
         return self._content
 
-    # @content.setter
-    # def content(self, value):
-    #     pass
+    @content.setter
+    def content(self, value):
+        self._content = value
 
 
 
