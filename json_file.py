@@ -1,6 +1,7 @@
 from text_file_parent import TextFile
 import json
-import re
+import re, os
+from exceptions import FilePathNotExistsError
 
 
 class JsonFile (TextFile):
@@ -28,21 +29,22 @@ class JsonFile (TextFile):
             return False
 
     def search(self, param) ->list:
-        match self.type:
-            case 'dict':
-                self._search_dict(param, dictionary=self.content)
-            case 'list':
-                self._search_list(param, l=self.content)
-            case 'int':
-                self._search_identical(param)
-            case 'float':
-                self._search_identical(param)
-            case 'str':
-                self._search_str(param)
-            case 'bool':
-                self._search_identical(param)
-            case 'None':
-                self._search_identical(param)
+
+        if self.type is dict:
+            return self._search_dict(param, dictionary=self.content)
+        elif self.type is list:
+            return self._search_list(param, l=self.content)
+        elif self.type is int:
+            return self._search_identical(param)
+        elif self.type is float:
+            return self._search_identical(param)
+        elif self.type is str:
+            return self._search_str(param)
+        elif self.type is bool:
+            return self._search_identical(param)
+        elif self.type is None:
+            return self._search_identical(param)
+
 
     def add_data(self, new_value, key=None, create_list=False):
         """

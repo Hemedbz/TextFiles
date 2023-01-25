@@ -1,5 +1,6 @@
 from text_file_parent import TextFile
 import csv, os
+from exceptions import *
 
 # Menu for this file:
     # built-in functions
@@ -44,21 +45,21 @@ class CsvFile (TextFile):
 
         # ensure other is csv
         if not isinstance(other, CsvFile):
-            raise Exception()
+            raise InstanceError(type(other), 'csv')
 
         # ensure headers are identical
         h1 = self.header
         h2 = other.header
         if None in (h1, h2):
-            raise Exception
+            raise HeaderError('Both files should be with header')
         if not self._is_identical(h1, h2):
-            raise Exception
+            raise HeaderError('The headers are not equals')
 
         # new file path
         new_fp = os.path.join(self.root, self.file_name + '_' + other.file_name + self._ext)
 
         if os.path.exists(new_fp):
-            raise Exception()
+            raise PathAlreadyExistsError(new_fp)
 
         with open(new_fp, "w", newline="") as new_csv:
             writer = csv.writer(new_csv)
@@ -109,14 +110,15 @@ class CsvFile (TextFile):
         :return: row content
         """
         if n not in range(len(self)):
-            raise Exception #out of range
+            raise OutOfRange(n) #out of range
+
         wanted_row = self.content[n]
         if w:
             if self._isheader:
                 wanted_row = {wanted_row[i]:self.header[i] for i in range(len(wanted_row))}
+
             else:
-                raise Exception #no header
-        else:
+                raise HeaderError('There is no header') #no header
             return wanted_row
 
     def get_column_header(self, n):

@@ -27,7 +27,7 @@ class FileFactory:
 
 
     @staticmethod
-    def instance(filetype, path, header: list=None, delimiter=None):
+    def instance(filetype, path, header=True, delimiter=','):
         match filetype:
             case 'csv':
                 return CsvFile(path, delimiter, header)
@@ -37,3 +37,7 @@ class FileFactory:
                 return JsonFile(path)
 
 
+if __name__ == '__main__':
+
+    my_file = FileFactory.instance('csv',"D:\\Full_Stack_Python\\Python_Course\\C10\\files", True, delimiter=';')
+    print(my_file.content)

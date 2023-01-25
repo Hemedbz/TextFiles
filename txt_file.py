@@ -37,7 +37,7 @@ class TxtFile (TextFile):
         new_name = self.root + "\\" + self.file_name + "_" + other.file_name + \ self._ext
 
         if os.path.exists(new_name):
-            raise AlreadyExists(new_name)
+            raise PathAlreadyExistsError(new_name)
 
         with open (new_name, 'x') as fh:
             fh.write(self._content + other._content)
