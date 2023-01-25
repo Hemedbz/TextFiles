@@ -190,11 +190,11 @@ class CsvFile (TextFile):
          :param end_row: row serial number
          :return: float
          """
-        sum_num = self.sum_column(n)
-        divider = len(self.content[beginning_row]:[end_row])
+        sum_num = self.sum_column(n, beginning_row, end_row)
+        divider = len(self.content[beginning_row:end_row])
         return sum_num/divider
 
-    def sum_column(self, n, beginning_row=0, end_row=len(self)):
+    def sum_column(self, n, beginning_row=0, end_row=(len(self)):
         """
 
         :param n: column serial number
