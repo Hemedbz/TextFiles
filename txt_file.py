@@ -2,8 +2,14 @@ from text_file_parent import TextFile
 from exceptions import *
 import os
 
+class TxtFile(TextFile):
+    pass
 
-class TxtFile (TextFile):
+
+class TxtFile_C(TxtFile):
+
+
+class TxtFile_M (TxtFile):
 
     def __init__(self, file_path):
         super().__init__(file_path)

@@ -173,16 +173,16 @@ class CsvFile (TextFile):
     def count(self, val) -> int:
         return len(self.search(val))
 
-    def addrow(self, row_to_add: list):  # TODO: For WeWork
+    def addrow(self, row_to_add: list):  # TODO: H
         # ",".join(row_to_add)
-        # add with csv.write
+        # add with csv.write/home/hemed/Desktop/fullstack_course/TextFiles
         pass
 
-    def deleterow(self, row_num):  # TODO: For WeWork
+    def deleterow(self, row_num):  # TODO: H
         pass
 
     def update_cell(self, cell_column, cell_row):
-        pass  # TODO: For WeWork
+        pass  # TODO: Y
 
     def average(self, n, beginning_row=0, end_row=len(self)):
         #TODO: EXCEPTIONS AND ERRORS - H

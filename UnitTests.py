@@ -4,7 +4,6 @@ import csv, json, os
 # class Tests(unittest.TestCase):
 #     def test_add(self):
 
-#TODO: UNITESTS
 file_path = 'D:\\Full_Stack_Python\\C10\\files\\example_2-Copy.json'
 
 with open('D:\\Full_Stack_Python\\C10\\files\\example_2-Copy.json', 'r') as ph:

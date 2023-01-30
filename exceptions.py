@@ -38,3 +38,6 @@ class HeaderError(TextFileExceptions):
 class OutOfRange(TextFileExceptions):
     def __init__(self, param):
         super().__init__(f'{param} not in range')
+
+class InvalidTypeError(TextFileExceptions):
+    pass
