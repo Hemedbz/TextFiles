@@ -28,63 +28,102 @@ class JsonFile (TextFile):
         else:
             return False
 
+    def _dump_content(self):
+        with open(self._file_path, 'w') as fd:
+            json.dump(self.content, fd)
+
     def search(self, param) ->list:
+        """
+        search specific string or other content in json
+        :param param: content to be searched
+        :return: list of findings
+        """
 
         if self.type is dict:
             return self._search_dict(param, dictionary=self.content)
         elif self.type is list:
             return self._search_list(param, l=self.content)
-        elif self.type is int:
-            return self._search_identical(param)
-        elif self.type is float:
-            return self._search_identical(param)
         elif self.type is str:
             return self._search_str(param)
-        elif self.type is bool:
-            return self._search_identical(param)
-        elif self.type is None:
+        else:
             return self._search_identical(param)
 
-
-    def add_data(self, new_value, key=None, create_list=False):
+    def count(self, param):
         """
-        The function add data to all types of Jason files
-        :param create_list: True if the user want to add new_value in list
-                            else False if the user want to add the new_value
-                            to the object that inside. type -> int, float, str.
-                            the default fot type bool is creating list.
+        counts how many times parameter appears in file
+        return: int
         """
-        # self.get_content()
+        return len(self.search(param))
 
-        if self.type is dict:
-            self._add_data_dict(new_value, key)
-        elif self.type is list:
-            self._add_data_list(new_value, key)
-        elif self.type is int:
-            self._add_data_num(new_value, create_list)
-        elif self.type is float:
-            self._add_data_num(new_value, create_list)
-        elif self.type is str:
-            self._add_data_str(new_value, create_list)
-        elif self.type is bool:
-            self._add_data_bool(new_value)
-        elif self.type is None:
-            self._add_data_none(new_value)
+    # def add_data(self, new_value, key=None, create_list=False):
+    #     """
+    #     The function add data to all types of Jason files
+    #     :param create_list: True if the user want to add new_value in list
+    #                         else False if the user want to add the new_value
+    #                         to the object that inside. type -> int, float, str.
+    #                         the default fot type bool is creating list.
+    #     """
+    #     # self.get_content()
+    #
+    #     if self.type is dict:
+    #         self._add_data_dict(new_value, key)
+    #     elif self.type is list:
+    #         self._add_data_list(new_value, key)
+    #     elif self.type is int:
+    #         self._add_data_num(new_value, create_list)
+    #     elif self.type is float:
+    #         self._add_data_num(new_value, create_list)
+    #     elif self.type is str:
+    #         self._add_data_str(new_value, create_list)
+    #     elif self.type is bool:
+    #         self._add_data_bool(new_value)
+    #     elif self.type is None:
+    #         self._add_data_none(new_value)
+    #
+    #     self._dump_content()
+
+
+
+
+
+    def remove_data(self, data): #TODO: H
+        """
+        removes specific data from json
+
+        """
+        if self.count(data) > 1:
+            raise Exception #tell user data appears more than once, can do manually or remove all
+
+        self.lock.acquire()
+        self.content()
+
+        if self.type == list:
+            for item in self.content:
+                if item == data:
+                    self.content.remove(data)
+                elif data in item:
+                    raise Exception #tell user data is tied into other data and should be removed manually
+        elif self.type == dict:
+            for key, value in self.content:
+                if key == data:
+                    del self.content[key]
+                elif value == data:
+                    self.content[key] = None
+                elif data in value:
+                    self.content.value.remove(data)
+
+
+
+
 
         self._dump_content()
+        self.lock.release()
+        return self.content()
 
-    def _dump_content(self):
-        with open(self._file_path, 'w') as fd:
-            json.dump(self.content, fd)
 
-    def count(self, val):
-        return len(self.search(val))
 
-    def delete_data(self, key: int | str | None = None, index_in_list: int | None = None):
-        # The user have to enter one of the value
-        if (key, index_in_list) is None:
-            raise Exception()
-        pass #TODO: H
+
+
 
     # sub functions by json type
 
@@ -100,20 +139,20 @@ class JsonFile (TextFile):
                 self.content[key].append(new_value)
             else:
                 self.content[key] = [self.content[key], new_value]
-    @staticmethod
-    def _add_data_dict_in_list(new_value, key, content_in_list):
-        # if the json type is dict and the user didn't transfer a key
-        if key is None:
-            raise Exception()
-
-        if key not in content_in_list:
-            content_in_list[key] = new_value
-        elif key in content_in_list:
-            if type(content_in_list[key]) is list:
-                content_in_list[key].append(new_value)
-            else:
-                content_in_list[key] = [content_in_list[key], new_value]
-        return content_in_list
+    # @staticmethod
+    # def _add_data_dict_in_list(new_value, key, content_in_list):
+    #     # if the json type is dict and the user didn't transfer a key
+    #     if key is None:
+    #         raise Exception()
+    #
+    #     if key not in content_in_list:
+    #         content_in_list[key] = new_value
+    #     elif key in content_in_list:
+    #         if type(content_in_list[key]) is list:
+    #             content_in_list[key].append(new_value)
+    #         else:
+    #             content_in_list[key] = [content_in_list[key], new_value]
+    #     return content_in_list
 
     def _add_data_list(self, new_value, key):
         key_in_val_flag = False
@@ -163,7 +202,6 @@ class JsonFile (TextFile):
             elif isinstance(i, list):
                 findings.extend(self._search_list(value, i))
         return findings
-
 
     def _search_identical(self, param):
         if param == self.content:

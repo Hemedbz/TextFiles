@@ -2,14 +2,8 @@ from text_file_parent import TextFile
 from exceptions import *
 import os
 
-class TxtFile(TextFile):
-    pass
 
-
-class TxtFile_C(TxtFile):
-
-
-class TxtFile_M (TxtFile):
+class TxtFile (TextFile):
 
     def __init__(self, file_path):
         super().__init__(file_path)
@@ -40,6 +34,7 @@ class TxtFile_M (TxtFile):
         if not isinstance(other, TxtFile):
             raise ValueError("2 values must be TxtFile type")
 
+        self.lock.acquire()
         new_name = self.root + "\\" + self.file_name + "_" + other.file_name + \ self._ext
 
         if os.path.exists(new_name):
@@ -47,6 +42,8 @@ class TxtFile_M (TxtFile):
 
         with open (new_name, 'x') as fh:
             fh.write(self._content + other._content)
+
+        self.lock.release()
 
         return True
 
@@ -76,9 +73,11 @@ class TxtFile_M (TxtFile):
         return findings
 
     def add_row(self, row):
+        self.lock.acquire()
         with open(self._file_path, "a") as fh:
             fh.write(f"\n"
                      f"{row}\n")
+        self.lock.release()
 
     def count(self, val) -> int:
         return self.content.count(val)

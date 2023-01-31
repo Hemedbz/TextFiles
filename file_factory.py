@@ -1,15 +1,15 @@
 import json, csv
 import os.path
-from csv_file import SmallCsvFile, LargeCsvFile
-from json_file import SmallJsonFIle, LargeJsonFile
-from txt_file import SmallTxtFIle, LargeTxtFile
+from csv_file import CsvFile, LargeCsvFile
+from json_file import JsonFile, LargeJsonFile
+from txt_file import TxtFile, LargeTxtFile
 from exceptions import *
 
 
 class FileFactory:
 
     @staticmethod
-    def create(filetype, path, header: list=None):
+    def create_file(filetype, path, header: list=None):
         """
         Creates new file
         :param filetype: str (csv/json/txt)
@@ -21,33 +21,33 @@ class FileFactory:
             with open(path, 'w', newline="") as cv:
                 write = csv.DictWriter(cv, fieldnames=header)
                 write.writeheader()
-                return SmallCsvFile(path)
+                return CsvFile(path)
 
         elif filetype == 'txt':
             fh = open(path, 'x')
             fh.close()
-            return SmallTxtFile(path)
+            return TxtFile(path)
 
         elif filetype == 'json':
             with open(path, 'w') as js:
                 json.dump(js, None)
-            return SmallJsonFile(path)
+            return JsonFile(path)
 
         else:
             raise InvalidTypeError
 
 
     @staticmethod
-    def instance(filetype, path, header=True, delimiter=',', max_size=50):
+    def create_instance(filetype, path, header=True, delimiter=',', max_size=50):
         size = os.path.getsize(path)
 
         if size <= max_size: #check if size comes in mb
             if filetype == 'csv':
-                return SmallCsvFile(path, delimiter, header)
+                return CsvFile(path, delimiter, header)
             elif filetype == 'txt':
-                return SmallTxtFile(path)
+                return TxtFile(path)
             elif filetype == 'json':
-                return SmallJsonFile(path)
+                return JsonFile(path)
             else:
                 raise InvalidTypeError
 
@@ -60,12 +60,4 @@ class FileFactory:
                 return LargeJsonFile(path)
             else:
                 raise InvalidTypeError
-
-
-
-
-if __name__ == '__main__':
-
-    my_file = FileFactory.instance('csv',"D:\\Full_Stack_Python\\Python_Course\\C10\\files", True, delimiter=';')
-    print(my_file.content)
 

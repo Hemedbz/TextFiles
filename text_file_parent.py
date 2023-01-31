@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import os
 from exceptions import *
 import time
+from threading import Lock
 
 
 class TextFile(ABC):
@@ -21,6 +22,7 @@ class TextFile(ABC):
         self._file_name = os.path.splitext(self.base_name)[0]
         self._creation_t = self.get_creation_time()
         self._last_modified_t = self._update_last_modified()
+        self.lock = Lock
 
     def __str__(self):
         return str(self._content)
@@ -102,8 +104,3 @@ class TextFile(ABC):
     @property
     def file_name(self):
         return self._file_name
-
-
-
-
-    #TODO: generator in iter (for each class) - Y
