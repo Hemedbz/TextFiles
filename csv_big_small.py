@@ -304,7 +304,7 @@ class LargeCsvFile(CsvFile):
     def __init__(self, file_path, delimiter=',', header=True, num_of_lines=1):
         super().__init__(file_path, delimiter, header)
         self.num_of_lines = num_of_lines
-        self.content = self.generate_call
+        self.content = self.csv_open_big_file_generator
 
     def display_content(self):
         for row in self.content():
@@ -341,6 +341,3 @@ if __name__ == '__main__':
     cv = LargeCsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv')
     print(len(cv))
     print(cv.display_content())
-
-
-

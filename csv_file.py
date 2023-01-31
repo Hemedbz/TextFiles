@@ -13,11 +13,11 @@ class CsvFile(TextFile):
 
     def __init__(self, file_path, delimiter=',', header=True ):
         """
-
         :param file_path:
         :param delimiter: default ","
         :param header: bool -> does file have header
         """
+
         self._isheader = header
         self._delimiter = delimiter
         # self._ext = 'csv'
@@ -259,10 +259,3 @@ class CsvFile(TextFile):
     def _ext(self):
         return 'csv'
 
-
-
-
-
-if __name__ == '__main__':
-    cv = CsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv')
-    print(len(cv))
