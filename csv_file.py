@@ -184,7 +184,7 @@ class CsvFile (TextFile):
     def update_cell(self, cell_column, cell_row):
         pass  # TODO: Y
 
-    def average(self, n, beginning_row=0, end_row=len(self)):
+    def average(self, n, beginning_row=0, end_row=None):
         #TODO: EXCEPTIONS AND ERRORS - H
         """
          :param n: column serial number
@@ -192,11 +192,11 @@ class CsvFile (TextFile):
          :param end_row: row serial number
          :return: float
          """
-        sum_num = self.sum_column(n, beginning_row, end_row)
-        divider = len(self.content[beginning_row:end_row])
+        sum_num = self.sum_column(n, beginning_row, end_row if end_row is not None else len(self))
+        divider = len(self.content[beginning_row:end_row if end_row is not None else len(self)])
         return sum_num/divider
 
-    def sum_column(self, n, beginning_row=0, end_row=(len(self)):
+    def sum_column(self, n, beginning_row=0, end_row=None):
         """
 
         :param n: column serial number
@@ -206,7 +206,7 @@ class CsvFile (TextFile):
         """
         sum_num = 0
         column = self.get_column_data(n)
-        for item in column[beginning_row:end_row]:
+        for item in column[beginning_row:end_row if end_row is not None else len(self)]:
             if isinstance(item, (int, float)):
                 sum_num += item
         return sum_num
