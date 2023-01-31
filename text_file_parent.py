@@ -30,7 +30,7 @@ class TextFile(ABC):
         pass
 
     @abstractmethod
-    def _specific_content(self, fd, *args):
+    def _specific_content(self, fd):
         pass
 
     @abstractmethod
@@ -41,13 +41,13 @@ class TextFile(ABC):
     def count(self, val) -> int:
         pass
 
-    def get_content(self, *args):
+    def get_content(self):
         with open(self._file_path, 'r') as fd:
-            self._content = self._specific_content(fd, *args)
-        return self._content
+            content = self._specific_content(fd)
+        return content
 
     def get_extension(self):
-        return os.path.splitext(self.base_name)[-1]
+        return os.path.splitext(self._file_path)[-1][1:]
 
     def get_file_path(self):
         return self._file_path
