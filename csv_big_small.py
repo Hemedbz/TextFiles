@@ -1,6 +1,42 @@
-from text_file_parent import TextFile
-import csv, os
+import csv
+import os
+
 from exceptions import *
+from text_file_parent import TextFile
+
+# header = False
+# def csv_open_big_file_generator(num_of_lins = 1):
+#     with open('D:\\Full_Stack_Python\\C10\\files\\text-Copy.csv', 'r') as cv:
+#         f = csv.reader(cv, delimiter=',')
+#         lins_list = []
+#         count = 0
+#         header_flag = True if header else False
+#
+#         for row in f:
+#             if header and header_flag:
+#                 header_flag = False
+#                 continue
+#             elif count < num_of_lins:
+#                 lins_list.append(row)
+#                 count += 1
+#             else:
+#                 yield lins_list
+#                 lins_list = [row]
+#                 count = 1
+#         if lins_list:
+#             yield lins_list
+#
+#
+#
+# for i in csv_open_big_file_generator(2):
+#     print(i)
+#
+# print()
+# for i in csv_open_big_file_generator():
+#     print(i)
+
+
+
 
 # Menu for this file:
     # built-in functions
@@ -20,9 +56,9 @@ class CsvFile(TextFile):
         """
         self._isheader = header
         self._delimiter = delimiter
-        # self._ext = 'csv'
         super().__init__(file_path)
 
+        # self._ext = 'csv'
 
     def __str__(self):
         return f"{self.file_name}\n" \
@@ -82,9 +118,8 @@ class CsvFile(TextFile):
             num_of_rows = -1
         else:
             num_of_rows = 0
-        for row in self._content:
-            print(row)
-            print(num_of_rows)
+        for row in self.content():
+
             num_of_rows += 1
         return num_of_rows
 
@@ -232,19 +267,15 @@ class CsvFile(TextFile):
             ret_val.append(row)
         return ret_val
 
-    def _specific_content(self, fd):  # TODO: add decorators
+    def _specific_content(self, fd, dict_type=False):  # TODO: add decorators
         """
 
         :param dict_type: wanted return, False or True -> list of lists or list of dicts
         :return: s/l
         """
-        ret_val = []
-        for row in csv.reader(fd, delimiter=self._delimiter):
-            ret_val.append(row)
-        return ret_val
-        # if not dict_type:
-        #     return self._csv_list(fd)
-        # return self._csv_dict(fd)
+        if not dict_type:
+            return self._csv_list(fd)
+        return self._csv_dict(fd)
 
     @staticmethod
     def _is_identical(h1: list, h2: list) -> bool:
@@ -259,10 +290,57 @@ class CsvFile(TextFile):
     def _ext(self):
         return 'csv'
 
+    @property
+    def delimiter(self):
+        return self._delimiter
+
+    # @delimiter.setter
+    # def delimiter(self, value):
+    #     pass
 
 
+class LargeCsvFile(CsvFile):
+
+    def __init__(self, file_path, delimiter=',', header=True, num_of_lines=1):
+        super().__init__(file_path, delimiter, header)
+        self.num_of_lines = num_of_lines
+        self.content = self.generate_call
+
+    def display_content(self):
+        for row in self.content():
+            print(row)
+
+    def generate_call(self):
+        return self.csv_open_big_file_generator(self.num_of_lines)
+
+    def csv_open_big_file_generator(self, num_of_lines=1):
+        with open(self.file_path, 'r') as cv:
+            f = csv.reader(cv, delimiter=self.delimiter)
+            lines_list = []
+            count = 0
+
+            start_first_time = True
+            header_flag = True if self._isheader else False
+
+            for row in f:
+                # if self._isheader and header_flag:
+                #     header_flag = False
+                #     continue
+                if count < num_of_lines:
+                    lines_list.append(row)
+                    count += 1
+                else:
+                    yield lines_list
+                    lines_list = [row]
+                    count = 1
+            if lines_list:
+                yield lines_list
 
 
 if __name__ == '__main__':
-    cv = CsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv')
+    cv = LargeCsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv')
     print(len(cv))
+    print(cv.display_content())
+
+
+
