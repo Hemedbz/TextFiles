@@ -327,7 +327,21 @@ class CsvFile(TextFile):
         :param h2: list
         :return: bool
         """
-        return h1 == h2
+        count = 0
+        for cul in h1:
+            for cul2 in h2:
+                if cul == cul2:
+                    count += 1
+
+        if len(h1) == count:
+            return True
+        return False
+
+    # from python console:
+    # a = ['a', 'b', 'c']
+    # b = ['c', 'b', 'a']
+    # print(a==b)
+    # False  -> need to be True
 
     def _ext(self):
         return 'csv'
