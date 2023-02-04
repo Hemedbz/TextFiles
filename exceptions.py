@@ -41,3 +41,4 @@ class OutOfRange(TextFileExceptions):
 
 class InvalidTypeError(TextFileExceptions):
     pass
+

@@ -12,8 +12,8 @@ class TextFile(ABC):
 
         if not os.path.exists(self._file_path):
             raise FileNotFoundError()
-        if self._ext() != self.get_extension():
-            raise TypeError
+        # if self._ext() != self.get_extension():
+        #     raise TypeError
 
         self._content = self.get_content()
         self._file_size = os.stat(self._file_path).st_size
@@ -27,9 +27,9 @@ class TextFile(ABC):
     def __str__(self):
         return str(self._content)
 
-    @abstractmethod
-    def _ext(self):
-        pass
+    # @abstractmethod
+    # def _ext(self):
+    #     pass
 
     @abstractmethod
     def _specific_content(self, fd):
@@ -65,9 +65,9 @@ class TextFile(ABC):
     def content(self):
         return self._content
 
-    @content.setter
-    def content(self, value):
-        self._content = value
+    # @content.setter
+    # def content(self, value):
+    #     self._content = value #TODO: ASK Y
 
     @property
     def creation_time(self):

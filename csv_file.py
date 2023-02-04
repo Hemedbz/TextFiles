@@ -20,9 +20,8 @@ class CsvFile(TextFile):
 
         self._isheader = header
         self._delimiter = delimiter
-        # self._ext = 'csv'
+        self._ext = 'csv'
         super().__init__(file_path)
-
 
     def __str__(self):
         return f"{self.file_name}\n" \
@@ -176,19 +175,37 @@ class CsvFile(TextFile):
     def count(self, val) -> int:
         return len(self.search(val))
 
-    def addrow(self, row_to_add: list):  # TODO: H
-        # ",".join(row_to_add)
-        # add with csv.write/home/hemed/Desktop/fullstack_course/TextFiles
-        pass
+    def addrow(self, row_to_add: list):
+        self.lock.acquire()
+        with open(self.file_path, 'a') as f:
+            writer = csv.writer(f, delimiter=self._delimiter)
+            writer.writerow(row_to_add)
 
-    def deleterow(self, row_num):  # TODO: H
-        pass
+        self.lock.release()
+
+    def delete_row(self, row_num=None, row_content=None):
+        """
+        Provide either row number or row content to delete
+        :param row_num: int
+        :param row_content: list
+        :return:
+        """
+        self.lock.acquire()
+        content = self.content
+        if row_num:
+            row_content = content[row_num]
+        content.remove(row_content)
+
+        with open(self.file_path, "w") as fh:
+            writer = csv.writer(fh)
+            writer.writerows(content)
+
+        self.lock.release()
 
     def update_cell(self, cell_column, cell_row):
         pass  # TODO: Y
 
     def average(self, n, beginning_row=0, end_row=None):
-        #TODO: EXCEPTIONS AND ERRORS - H
         """
          :param n: column serial number
          :param beginning_row: row serial number
@@ -255,7 +272,4 @@ class CsvFile(TextFile):
         :return: bool
         """
         return h1 == h2
-
-    def _ext(self):
-        return 'csv'
 
