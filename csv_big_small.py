@@ -134,16 +134,20 @@ class CsvFile(TextFile):
         return num_of_rows
 
     def __iter__(self):
-        self.text = open(self.file_path, 'r')
-        return self
+        for row in self.content():
+            yield row
 
-    def __next__(self):
-        read = self.text.readline()  # 'Identifier,First name,Last name\n'
-        if read == '':
-            self.text.close()
-            raise StopIteration()
-        read = read.rstrip("\n")  # 'Identifier,First name,Last name'
-        return read.split(self._delimiter)  # ['Identifier', 'First name', 'Last name']
+    # def __iter__(self):
+    #     self.text = open(self.file_path, 'r')
+    #     return self
+    #
+    # def __next__(self):
+    #     read = self.text.readline()  # 'Identifier,First name,Last name\n'
+    #     if read == '':
+    #         self.text.close()
+    #         raise StopIteration()
+    #     read = read.rstrip("\n")  # 'Identifier,First name,Last name'
+    #     return read.split(self._delimiter)  # ['Identifier', 'First name', 'Last name']
 
 
 
