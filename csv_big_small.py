@@ -1,3 +1,4 @@
+import abc
 import csv
 import os
 
@@ -56,9 +57,10 @@ class CsvFile(TextFile):
         """
         self._isheader = header
         self._delimiter = delimiter
+        # self._ext = 'csv'
         super().__init__(file_path)
 
-        # self._ext = 'csv'
+
 
     def __str__(self):
         return f"{self.file_name}\n" \
@@ -68,7 +70,7 @@ class CsvFile(TextFile):
                f"file last modified: {self.last_modified}"
 
     def __contains__(self, item):
-        for row in self._content:
+        for row in self.content():
             if item in row:
                 return True
         return False
@@ -79,6 +81,7 @@ class CsvFile(TextFile):
         :param other: second csv file object
         :return: new csv file as object (after creating)
         """
+        count = 0
 
         # ensure other is csv
         if not isinstance(other, CsvFile):
@@ -93,20 +96,24 @@ class CsvFile(TextFile):
             raise HeaderError('The headers are not equals')
 
         # new file path
-        new_fp = os.path.join(self.root, self.file_name + '_' + other.file_name + self._ext)
+        ext = '.' + self._ext()
+        new_fp = os.path.join(self.root, self.file_name + '_' + other.file_name + ext)
 
         if os.path.exists(new_fp):
             raise PathAlreadyExistsError(new_fp)
 
+        # Must use DictReader -> If the header is the same but in a different order the final table will be incorrect
         with open(new_fp, "w", newline="") as new_csv:
-            writer = csv.writer(new_csv)
+            writer = csv.DictWriter(new_csv, fieldnames=h1)
+            writer.writeheader()
 
-            for row in self.content:
+            for row in self._csv_dictreader_generator():
                 writer.writerow(row)
-            for row in other.content[1:]:
+            for row in other._csv_dictreader_generator():
                 writer.writerow(row)
 
-        new_csv = CsvFile(new_fp, header=True)
+        new_csv = self._create_new(new_fp)
+        # new_csv = CsvFile(new_fp, header=True)
         return new_csv
 
     def __len__(self):
@@ -119,9 +126,40 @@ class CsvFile(TextFile):
         else:
             num_of_rows = 0
         for row in self.content():
-
-            num_of_rows += 1
+            if self.many:
+                print(row)
+                num_of_rows += len(row)
+            else:
+                num_of_rows += 1
         return num_of_rows
+
+    def __iter__(self):
+        self.text = open(self.file_path, 'r')
+        return self
+
+    def __next__(self):
+        read = self.text.readline()  # 'Identifier,First name,Last name\n'
+        if read == '':
+            self.text.close()
+            raise StopIteration()
+        read = read.rstrip("\n")  # 'Identifier,First name,Last name'
+        return read.split(self._delimiter)  # ['Identifier', 'First name', 'Last name']
+
+
+
+        # try:
+        #     return self._csv_open_big_file_generator(1, False)
+        # except Exception:
+        #     raise StopIteration()
+
+    @staticmethod
+    @abc.abstractmethod
+    def _create_new(path):
+        pass
+
+    @abc.abstractmethod
+    def _csv_dictreader_generator(self):
+        pass
 
     def shape(self):
         """
@@ -137,7 +175,11 @@ class CsvFile(TextFile):
     @property
     def header(self) -> list | None:
         if self._isheader:
-            return self.content[0]
+            for row in self.content():
+                if self.many:
+                    return row[0]
+                else:
+                    return row
         else:
             return None
 
@@ -285,7 +327,21 @@ class CsvFile(TextFile):
         :param h2: list
         :return: bool
         """
-        return h1 == h2
+        count = 0
+        for cul in h1:
+            for cul2 in h2:
+                if cul == cul2:
+                    count += 1
+
+        if len(h1) == count:
+            return True
+        return False
+
+    # from python console:
+    # a = ['a', 'b', 'c']
+    # b = ['c', 'b', 'a']
+    # print(a==b)
+    # False  -> need to be True
 
     def _ext(self):
         return 'csv'
@@ -301,19 +357,32 @@ class CsvFile(TextFile):
 
 class LargeCsvFile(CsvFile):
 
-    def __init__(self, file_path, delimiter=',', header=True, num_of_lines=1):
+    def __init__(self, file_path, delimiter=',', header=True, num_of_lines=1, many=False):
         super().__init__(file_path, delimiter, header)
+        if num_of_lines > 1 and many is False or num_of_lines == 1 and many:
+            raise Exception()
+
         self.num_of_lines = num_of_lines
-        self.content = self.csv_open_big_file_generator
+        self.many = many
+        self.content = self._generate_call
 
     def display_content(self):
+        """
+        Print the csv file
+        """
         for row in self.content():
             print(row)
 
-    def generate_call(self):
-        return self.csv_open_big_file_generator(self.num_of_lines)
+    def _generate_call(self):
+        return self._csv_open_big_file_generator(self.num_of_lines, self.many)
 
-    def csv_open_big_file_generator(self, num_of_lines=1):
+    def _csv_open_big_file_generator(self, num_of_lines, many):
+        """
+        Generator of open csv file as csv reader
+        :param num_of_lines: The bunch of lines the user want to get each time
+        :param many: True if num_of_lines > 1 else False
+        :return:
+        """
         with open(self.file_path, 'r') as cv:
             f = csv.reader(cv, delimiter=self.delimiter)
             lines_list = []
@@ -323,21 +392,61 @@ class LargeCsvFile(CsvFile):
             header_flag = True if self._isheader else False
 
             for row in f:
-                # if self._isheader and header_flag:
-                #     header_flag = False
-                #     continue
-                if count < num_of_lines:
-                    lines_list.append(row)
-                    count += 1
+
+                if many:
+                    # if self._isheader and header_flag:
+                    #     header_flag = False
+                    #     count += 1
+                    #     continue
+                    if count < num_of_lines:
+                        lines_list.append(row)
+                        count += 1
+                    else:
+                        yield lines_list
+                        lines_list = [row]
+                        count = 1
                 else:
-                    yield lines_list
-                    lines_list = [row]
-                    count = 1
-            if lines_list:
+                    yield row
+
+            if lines_list and many:
                 yield lines_list
+
+    def _csv_dictreader_generator(self):
+        """
+        Generator of open csv file as a DictReader
+        :return:
+        """
+        with open(self.file_path, 'r') as cv:
+            f = csv.DictReader(cv, delimiter=self.delimiter)
+
+            for row in f:
+                yield row
+
+    @staticmethod
+    def _create_new(path):
+        return LargeCsvFile(path)
 
 
 if __name__ == '__main__':
-    cv = LargeCsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv')
-    print(len(cv))
-    print(cv.display_content())
+    # cv = LargeCsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv', num_of_lines=2, many=True)
+    cv = LargeCsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv', num_of_lines=1, many=False)
+    cv2 = LargeCsvFile('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv', num_of_lines=1, many=False)
+
+    # cv3 = cv + cv2
+    # print(len(cv3))
+
+    for row in cv:
+        print(row)
+
+    # print(len(cv))
+    # print(cv.display_content())
+
+    # text = open('D:\\Full_Stack_Python\\C10\\files\\text_text_4.csv', 'r')
+    # read = text.readline()
+    # read = read.rstrip("\n")
+    # print(read.split(','))
+
+
+
+
+
