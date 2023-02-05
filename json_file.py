@@ -61,28 +61,54 @@ class JsonFile (TextFile):
         """
         return len(self.search(param))
 
-    def add_data(self, new_value, key=None, index=-1, inner_key=None, dict_index=None, to_list=False):
+    def add_data(self, content_locator, new_index, new_value, to_list=False):
+        file_content = self.content()
+        self.lock()
+        content = content[content_locator]
+        tyc = type(content)
+        if tyc == dict:
+            content = self._add_data_dict(content, new_index, new_value)
+        elif tyc == list:
+            content = self._add_data_list(content, new_value, new_index)
+        elif tyc == str:
+            content = self._add_data_str(content, new_value, to_list)
+        elif tyc ==  float or tyc == int:
+            content = self._add_data_num(content, new_value, to_list)
+        elif tyc == bool:
+            content = self._add_data_bool(content, new_value)
+        elif tyc == None:
+            content = self._add_data_none(content, new_value)
 
-        self.get_content()
-        self.lock.acquire()
-
-        if self.type is dict:
-            self._add_data_dict(key, new_value)
-        elif self.type is list:
-            self._add_data_list(new_value, index, inner_key, dict_index)
-        elif self.type is int:
-            self._add_data_num(new_value, to_list)
-        elif self.type is float:
-            self._add_data_num(new_value, to_list)
-        elif self.type is str:
-            self._add_data_str(new_value, to_list)
-        elif self.type is bool:
-            self._add_data_bool(new_value)
-        elif self.type is None:
-            self._add_data_none(new_value)
+        file_content[content_locator] = content
+        self.content = file_content
 
         self._dump_content()
         self.lock.release()
+
+
+
+    # def add_data(self, new_value, key=None, index=-1, inner_key=None, dict_index=None, to_list=False):
+    #
+    #     self.get_content()
+    #     self.lock.acquire()
+    #
+    #     if self.type is dict:
+    #         self._add_data_dict(key, new_value)
+    #     elif self.type is list:
+    #         self._add_data_list(new_value, index, inner_key, dict_index)
+    #     elif self.type is int:
+    #         self._add_data_num(new_value, to_list)
+    #     elif self.type is float:
+    #         self._add_data_num(new_value, to_list)
+    #     elif self.type is str:
+    #         self._add_data_str(new_value, to_list)
+    #     elif self.type is bool:
+    #         self._add_data_bool(new_value)
+    #     elif self.type is None:
+    #         self._add_data_none(new_value)
+    #
+    #     self._dump_content()
+    #     self.lock.release()
 
     def remove_data(self, data): #TODO: H
         """
@@ -111,52 +137,55 @@ class JsonFile (TextFile):
                     self.content.value.remove(data)
 
 
-
-
-
         self._dump_content()
         self.lock.release()
         return self.content()
 
     # sub functions by json type
 
-    def _add_data_dict(self, key, new_value):
-        if key not in self.content:
-            self.content[key] = new_value
+    @staticmethod
+    def _add_data_dict(content, key, new_value):
+        if key not in content:
+            content[key] = new_value
 
-        elif key in self.content:
-            if type(self.content[key]) is list:
-                self.content[key].append(new_value)
+        elif key in content:
+            if type(content[key]) is list:
+                content[key].append(new_value)
             else:
-                self.content[key] = [self.content[key], new_value]
+                content[key] = [content[key], new_value]
+        return content
 
-    def _add_data_list(self, new_value, index, inner_key, dict_index):
-        if type(self.content[dict_index]) == 'dict':
-            if key in self.content[dict_index]:
-                self.content[dict_index][inner_key] = [self.content[dict_index][inner_key], new_value]
-            else:
-                self.content[dict_index][inner_key] = new_value
-        else:
-            self.content.insert(index, new_value)
+    @staticmethod
+    def _add_data_list(content, new_value, index, inner_key, dict_index):
+            content.insert(index, new_value)
+            return content
 
-    def _add_data_str(self, new_value, to_list):
+    @staticmethod
+    def _add_data_str(content, new_value, to_list):
         if type(new_value) is str and not to_list:
-            self.content = self.content+f"\n " \
+            content = content+f"\n " \
                                           f"{new_value}"
         else:
-            self.content = [self.content, new_value]
+            content = [content, new_value]
+        return content
 
-    def _add_data_num(self, new_value, to_list=False):
+    @staticmethod
+    def _add_data_num(content, new_value, to_list=False):
         if type(new_value) in [int, float] and not to_list:
-            self.content += new_value
+            content += new_value
         else:
-            self.content = [self._content, new_value]
+            content = [content, new_value]
+        return content
 
-    def _add_data_bool(self, new_value):
-        self.content = [self._content, new_value]
+    @staticmethod
+    def _add_data_bool(content, new_value):
+        content = [content, new_value]
+        return content
 
-    def _add_data_none(self, new_value):
-        self.content = new_value
+    @staticmethod
+    def _add_data_none(content, new_value):
+        content = new_value
+        return content
 
     def _search_dict(self, param, dictionary):
         findings = []
