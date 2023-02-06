@@ -14,6 +14,9 @@ class TextFile(ABC):
             raise FileNotFoundError()
         if self._ext() != self.get_extension():
             raise TypeError
+        if os.path.getsize(self._file_path) > 50000000:
+            raise Exception #TODO: Define exception
+
 
         self._content = self.load_content()
         self._file_size = os.stat(self._file_path).st_size

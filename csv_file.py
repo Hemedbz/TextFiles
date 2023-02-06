@@ -11,16 +11,18 @@ from exceptions import *
 
 class CsvFile(TextFile):
 
-    def __init__(self, file_path, delimiter=',', header=True ):
+    def __init__(self, file_path, delimiter=',', has_header=True, as_dict=False):
         """
         :param file_path:
         :param delimiter: default ","
         :param header: bool -> does file have header
         """
 
-        self._isheader = header
+        self._isheader = has_header
         self._delimiter = delimiter
+        self.as_dict = as_dict
         super().__init__(file_path)
+
 
     def __str__(self):
         return f"{self.file_name}\n" \
@@ -35,7 +37,7 @@ class CsvFile(TextFile):
                 return True
         return False
 
-    def __add__(self, other): #TODO: Take care of exceptions
+    def __add__(self, other):
         """
         Creates new csv file which is combination of two other files
         :param other: second csv file object
@@ -52,7 +54,7 @@ class CsvFile(TextFile):
         if None in (h1, h2):
             raise HeaderError('Both files should be with header')
         if not self._is_identical(h1, h2):
-            raise HeaderError('The headers are not equals')
+            raise HeaderError('The headers are not identical')
 
         # new file path
         new_fp = os.path.join(self.root, self.file_name + '_' + other.file_name + self._ext)
@@ -68,7 +70,7 @@ class CsvFile(TextFile):
             for row in other.content[1:]:
                 writer.writerow(row)
 
-        new_csv = CsvFile(new_fp, header=True)
+        new_csv = CsvFile(new_fp, has_header=True)
         return new_csv
 
     def __len__(self):
@@ -103,6 +105,9 @@ class CsvFile(TextFile):
 
     @property
     def header(self) -> list | None:
+        """
+        :return: the header of the csv file
+        """
         if self._isheader:
             return self.content[0]
         else:
@@ -115,15 +120,15 @@ class CsvFile(TextFile):
         :return: row content
         """
         if n not in range(len(self)):
-            raise OutOfRange(n) #out of range
+            raise OutOfRange(n)
 
         wanted_row = self.content[n]
         if w:
             if self._isheader:
-                wanted_row = {wanted_row[i]:self.header[i] for i in range(len(wanted_row))}
+                wanted_row = {wanted_row[i]: self.header[i] for i in range(len(wanted_row))}
 
             else:
-                raise HeaderError('There is no header') #no header
+                raise HeaderError('File has no header')
             return wanted_row
 
     def get_column_header(self, n):
@@ -178,7 +183,7 @@ class CsvFile(TextFile):
     def count(self, val) -> int:
         return len(self.search(val))
 
-    def addrow(self, row_to_add: list):
+    def add_row(self, row_to_add: list):
         self.lock.acquire()
         with open(self.file_path, 'a') as f:
             writer = csv.writer(f, delimiter=self._delimiter)
@@ -205,8 +210,30 @@ class CsvFile(TextFile):
 
         self.lock.release()
 
-    def update_cell(self, cell_column, cell_row):
-        pass  # TODO: Y
+    def update_cell(self, cell_row, cell_column, new_value):
+        """
+        Change value of specific cell in csv file
+
+        :param cell_row: int
+        :param cell_column: int
+        :param new_value:
+
+        """
+        if cell_row > len(self):
+            raise OutOfRange(cell_row)
+        if cell_column > len(self.content[1]):
+            raise OutOfRange(cell_column)
+
+        self.lock.acquire()
+
+        content = self.content()
+        content[cell_row][cell_column] = new_value
+
+        with open(self.file_path, "w") as fh:
+            writer = csv.writer(fh)
+            writer.writerows(content)
+
+        self.lock.release()
 
     def average(self, n, beginning_row=0, end_row=None):
         """
@@ -252,19 +279,14 @@ class CsvFile(TextFile):
             ret_val.append(row)
         return ret_val
 
-    def _specific_content(self, fd):  # TODO: add decorators
+    def _specific_content(self, fd):
         """
-
-        :param dict_type: wanted return, False or True -> list of lists or list of dicts
-        :return: s/l
+        :param
+        :return: list
         """
-        ret_val = []
-        for row in csv.reader(fd, delimiter=self._delimiter):
-            ret_val.append(row)
-        return ret_val
-        # if not dict_type:
-        #     return self._csv_list(fd)
-        # return self._csv_dict(fd)
+        if not self.as_dict:
+            return self._csv_list(fd)
+        return self._csv_dict(fd)
 
     def _ext(self):
         return 'csv'

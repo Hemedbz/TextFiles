@@ -82,7 +82,7 @@ class JsonFile (TextFile):
             content = self._add_data_none(content, new_value)
 
         file_content[content_locator] = content
-        self.content = file_content
+        self._content = file_content
 
         self._dump_content()
         self.lock.release()
