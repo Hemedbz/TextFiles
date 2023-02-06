@@ -63,7 +63,7 @@ class JsonFile (TextFile):
         """
         return len(self.search(param))
 
-    def add_data(self, content_locator=None, new_index=None, new_value=None, to_list=False): #TODO: TYPE CON-LOCATOR
+    def add_data(self, content_locator=None, new_index=None, new_value=None, to_list=False):
         file_content = self.content()
         self.lock()
         content = file_content[content_locator]
@@ -87,7 +87,7 @@ class JsonFile (TextFile):
         self._dump_content()
         self.lock.release()
 
-    def remove_data(self, data): #TODO: H
+    def remove_data(self, data):
         """
         removes specific data from json
 

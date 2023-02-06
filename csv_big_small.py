@@ -75,7 +75,7 @@
 #                 return True
 #         return False
 #
-#     def __add__(self, other): #TODO: Take care of exceptions
+#     def __add__(self, other):
 #         """
 #         Creates new csv file which is combination of two other files
 #         :param other: second csv file object
@@ -251,19 +251,19 @@
 #     def count(self, val) -> int:
 #         return len(self.search(val))
 #
-#     def addrow(self, row_to_add: list):  # TODO: H
+#     def addrow(self, row_to_add: list):
 #         # ",".join(row_to_add)
 #         # add with csv.write/home/hemed/Desktop/fullstack_course/TextFiles
 #         pass
 #
-#     def deleterow(self, row_num):  # TODO: H
+#     def deleterow(self, row_num):
 #         pass
 #
 #     def update_cell(self, cell_column, cell_row):
-#         pass  # TODO: Y
+#         pass
 #
 #     def average(self, n, beginning_row=0, end_row=None):
-#         #TODO: EXCEPTIONS AND ERRORS - H
+#
 #         """
 #          :param n: column serial number
 #          :param beginning_row: row serial number
@@ -307,7 +307,7 @@
 #             ret_val.append(row)
 #         return ret_val
 #
-#     def _specific_content(self, fd, dict_type=False):  # TODO: add decorators
+#     def _specific_content(self, fd, dict_type=False):
 #         """
 #
 #         :param dict_type: wanted return, False or True -> list of lists or list of dicts

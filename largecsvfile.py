@@ -8,9 +8,9 @@ class LargeCsvFile(CsvFile):
         super().__init__(file_path, delimiter, has_header, as_dict)
         if iterator_size > 1 and many is False \
                 or iterator_size == 1 and many:
-            raise Exception() #TODO: Define exception
+            raise Exception()
         if iterator_size < 1:
-            raise Exception() #TODO: Define exception
+            raise Exception()
 
         self._lines_for_iterator = iterator_size
         self._many = many

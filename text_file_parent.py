@@ -15,7 +15,7 @@ class TextFile(ABC):
         if self._ext() != self.get_extension():
             raise TypeError
         if os.path.getsize(self._file_path) > 50000000:
-            raise Exception #TODO: Define exception
+            raise SizeError("File to large to handle with this packacge")
 
 
         self._content = self.load_content()
