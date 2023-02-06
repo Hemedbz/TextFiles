@@ -34,7 +34,8 @@ class TxtFile (TextFile):
             raise ValueError("2 values must be TxtFile type")
 
         self.lock.acquire()
-        new_name = self.root + "\\" + self.file_name + "_" + other.file_name + \ self._ext
+
+        new_name = os.path.join(self.root, self.file_name + '_' + other.file_name + '.' + self._ext)
 
         if os.path.exists(new_name):
             raise PathAlreadyExistsError(new_name)
