@@ -150,12 +150,6 @@ class CsvFile(TextFile):
     #     return read.split(self._delimiter)  # ['Identifier', 'First name', 'Last name']
 
 
-
-        # try:
-        #     return self._csv_open_big_file_generator(1, False)
-        # except Exception:
-        #     raise StopIteration()
-
     @staticmethod
     @abc.abstractmethod
     def _create_new(path):
