@@ -8,7 +8,6 @@ class JsonFile (TextFile):
 
     def __init__(self, file_path):
         super().__init__(file_path)
-        self._ext = 'json'
         self.type = type(self.content)
         if self.type == 'dict':
             self.keys = [key for key in self.content]
@@ -16,6 +15,9 @@ class JsonFile (TextFile):
 
     def _specific_content(self, fd, **kwargs):
         return json.load(fd)
+
+    def _ext(self):
+        return 'json'
 
     def __contains__(self, item):
         """
@@ -61,10 +63,10 @@ class JsonFile (TextFile):
         """
         return len(self.search(param))
 
-    def add_data(self, content_locator, new_index, new_value, to_list=False):
+    def add_data(self, content_locator=None, new_index=None, new_value=None, to_list=False): #TODO: TYPE CON-LOCATOR
         file_content = self.content()
         self.lock()
-        content = content[content_locator]
+        content = file_content[content_locator]
         tyc = type(content)
         if tyc == dict:
             content = self._add_data_dict(content, new_index, new_value)
@@ -72,7 +74,7 @@ class JsonFile (TextFile):
             content = self._add_data_list(content, new_value, new_index)
         elif tyc == str:
             content = self._add_data_str(content, new_value, to_list)
-        elif tyc ==  float or tyc == int:
+        elif tyc == float or tyc == int:
             content = self._add_data_num(content, new_value, to_list)
         elif tyc == bool:
             content = self._add_data_bool(content, new_value)
@@ -84,31 +86,6 @@ class JsonFile (TextFile):
 
         self._dump_content()
         self.lock.release()
-
-
-
-    # def add_data(self, new_value, key=None, index=-1, inner_key=None, dict_index=None, to_list=False):
-    #
-    #     self.get_content()
-    #     self.lock.acquire()
-    #
-    #     if self.type is dict:
-    #         self._add_data_dict(key, new_value)
-    #     elif self.type is list:
-    #         self._add_data_list(new_value, index, inner_key, dict_index)
-    #     elif self.type is int:
-    #         self._add_data_num(new_value, to_list)
-    #     elif self.type is float:
-    #         self._add_data_num(new_value, to_list)
-    #     elif self.type is str:
-    #         self._add_data_str(new_value, to_list)
-    #     elif self.type is bool:
-    #         self._add_data_bool(new_value)
-    #     elif self.type is None:
-    #         self._add_data_none(new_value)
-    #
-    #     self._dump_content()
-    #     self.lock.release()
 
     def remove_data(self, data): #TODO: H
         """

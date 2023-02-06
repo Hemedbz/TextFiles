@@ -20,7 +20,6 @@ class CsvFile(TextFile):
 
         self._isheader = header
         self._delimiter = delimiter
-        self._ext = 'csv'
         super().__init__(file_path)
 
     def __str__(self):
@@ -86,6 +85,10 @@ class CsvFile(TextFile):
             print(num_of_rows)
             num_of_rows += 1
         return num_of_rows
+
+    def __iter__(self):
+        for row in self.content():
+            yield row
 
     def shape(self):
         """
@@ -262,6 +265,9 @@ class CsvFile(TextFile):
         # if not dict_type:
         #     return self._csv_list(fd)
         # return self._csv_dict(fd)
+
+    def _ext(self):
+        return 'csv'
 
     @staticmethod
     def _is_identical(h1: list, h2: list) -> bool:
