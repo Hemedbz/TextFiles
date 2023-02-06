@@ -88,7 +88,7 @@ class JsonFile (TextFile):
         self.lock.release()
 
 
-    def remove_data(self, content_locator: str, key: str | int = None, index: int = None): #TODO: H
+    def remove_data(self, content_locator: str, key: str | int = None, index: int = None):
         """
         removes specific data from json for type -> list, dict only
 
@@ -183,28 +183,4 @@ class JsonFile (TextFile):
     def _search_str(self, value):
         return re.findall(value, self.content)
 
-if __name__ == '__main__':
-    my_json = JsonFile('D:\\Full_Stack_Python\\C10\\files\\example_2-Copy-Copy.json')
-    # print(my_json.type)
-    pprint(my_json.content)
-    # print(my_json.search('Age'))
-    # my_json.remove_data("[0]['ParentsNames'][0][0][1]", index=1)
-    # for key in my_json:
-    #     print(key)
 
-    # with open('D:\\Full_Stack_Python\\C10\\files\\example_2-Copy-Copy.json', 'r') as js:
-    #     j = json.load(js)
-    #
-    #     print(j)
-    #
-    # # exec(f"content = j[0]['Name']")
-    # # print(content)
-    # exec(f"content = j[0]['ParentsNames'][1]")
-    # print(content)
-    # # exec(f"del j[0]['Name']")
-    # # print(j)
-    # # exec(f"del j[0]['ParentsNames'][1]")
-    # # print(j)
-    #
-    # with open('D:\\Full_Stack_Python\\C10\\files\\example_2-Copy-Copy.json', 'w') as js:
-    #     json.dump(j, js)
