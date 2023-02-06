@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from text_file_parent import TextFile
 import json
 import re, os
@@ -48,7 +50,7 @@ class JsonFile (TextFile):
         if self.type is dict:
             return self._search_dict(param, dictionary=self.content)
         elif self.type is list:
-            return self._search_list(param, l=self.content)
+            return self._search_list(param, given_list=self.content)
         elif self.type is str:
             return self._search_str(param)
         else:
@@ -110,38 +112,80 @@ class JsonFile (TextFile):
     #     self._dump_content()
     #     self.lock.release()
 
-    def remove_data(self, data): #TODO: H
+    # def _delete_from_list(self, value, key, index, content: list):
+    #     if index is None:
+    #         raise Exception() # -> cant delete from list without index
+    #
+    #     delete_inx = False
+    #
+    #     for inx, val in enumerate(content):
+    #         if inx == index:
+    #             if key is not None and type(val) == dict:
+    #                 val = self._delete_from_dict(my_key=key, content=val, name_func='_delete_from_list')
+    #             elif key is not None and type(val) != dict:
+    #                 raise Exception() # -> When we are in the requested place in the list and the user entered KEY but there is no dictionary inside
+    #             else:
+    #                 delete_inx = True
+    #
+    #     if delete_inx:
+    #         self.content.pop(index)
+
+
+    def remove_data(self, content_locator: str, key: str | int = None, index: int = None): #TODO: H
         """
-        removes specific data from json
+        removes specific data from json for type -> list, dict only
 
         """
-        if self.count(data) > 1:
-            raise Exception #tell user data appears more than once, can do manually or remove all
-
         self.lock.acquire()
-        self.content()
+        if key is not None:
+            if not re.findall(f"{key}']$", content_locator):
+                raise Exception() # -> The key does not match the end of the string TODO: exception
+        elif index is not None:
+            if not re.findall(f"{index}]$", content_locator):
+                raise Exception() # -> The index does not match the end of the string
+        elif key is None and index is None:
+            raise Exception()
 
-        if self.type == list:
-            for item in self.content:
-                if item == data:
-                    self.content.remove(data)
-                elif data in item:
-                    raise Exception #tell user data is tied into other data and should be removed manually
-        elif self.type == dict:
-            for key, value in self.content:
-                if key == data:
-                    del self.content[key]
-                elif value == data:
-                    self.content[key] = None
-                elif data in value:
-                    self.content.value.remove(data)
-
-
+        exec(f"del self.content{content_locator}")
         self._dump_content()
         self.lock.release()
-        return self.content()
 
-    # sub functions by json type
+
+
+
+        # if self.type == list:
+        #     self._delete_from_list()
+        # elif self.type == dict:
+        #     self._delete_from_dict()
+
+
+    #     if self.count(data) > 1:
+    #         raise Exception #tell user data appears more than once, can do manually or remove all
+    #
+    #     self.lock.acquire()
+    #     self.content()
+    #
+    #     if self.type == list:
+    #         for item in self.content:
+    #             if item == data:
+    #                 self.content.remove(data)
+    #             elif data in item:
+    #                 raise Exception #tell user data is tied into other data and should be removed manually
+    #     elif self.type == dict:
+    #         for key, value in self.content:
+    #             if key == data:
+    #                 del self.content[key]
+    #             elif value == data:
+    #                 self.content[key] = None
+    #             elif data in value:
+    #                 self.content.value.remove(data)
+    #
+    #
+    #     self._dump_content()
+    #     self.lock.release()
+    #     return self.content()
+    #
+    # # sub functions by json type
 
     @staticmethod
     def _add_data_dict(content, key, new_value):
@@ -198,13 +242,13 @@ class JsonFile (TextFile):
 
     def _search_list(self, value, given_list):
         findings = []
-        for index, content in enumerate(given_list):
-            if content == value:
-                findings.append((index, content))
-            elif isinstance(i, dict):
-                findings.append(self._search_dict(value, i))
-            elif isinstance(i, list):
-                findings.extend(self._search_list(value, i))
+        for index, val in enumerate(given_list):
+            if val == value:
+                findings.append((index, val))
+            elif isinstance(val, dict):
+                findings.append(self._search_dict(value, val))
+            elif isinstance(val, list):
+                findings.extend(self._search_list(value, val))
         return findings
 
     def _search_identical(self, value):
@@ -217,7 +261,27 @@ class JsonFile (TextFile):
         return re.findall(value, self.content)
 
 if __name__ == '__main__':
-    my_json = JsonFile('tests_for_json.json')
-    print(my_json.type)
-    for key in my_json:
-        print(key)
+    my_json = JsonFile('D:\\Full_Stack_Python\\C10\\files\\example_2-Copy-Copy.json')
+    # print(my_json.type)
+    pprint(my_json.content)
+    # print(my_json.search('Age'))
+    # my_json.remove_data("[0]['ParentsNames'][0][0][1]", index=1)
+    # for key in my_json:
+    #     print(key)
+
+    # with open('D:\\Full_Stack_Python\\C10\\files\\example_2-Copy-Copy.json', 'r') as js:
+    #     j = json.load(js)
+    #
+    #     print(j)
+    #
+    # # exec(f"content = j[0]['Name']")
+    # # print(content)
+    # exec(f"content = j[0]['ParentsNames'][1]")
+    # print(content)
+    # # exec(f"del j[0]['Name']")
+    # # print(j)
+    # # exec(f"del j[0]['ParentsNames'][1]")
+    # # print(j)
+    #
+    # with open('D:\\Full_Stack_Python\\C10\\files\\example_2-Copy-Copy.json', 'w') as js:
+    #     json.dump(j, js)
