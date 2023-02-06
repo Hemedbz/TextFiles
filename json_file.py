@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from text_file_parent import TextFile
 import json
 import re, os
@@ -10,7 +8,6 @@ class JsonFile (TextFile):
 
     def __init__(self, file_path):
         super().__init__(file_path)
-        self._ext = 'json'
         self.type = type(self.content)
         if self.type == 'dict':
             self.keys = [key for key in self.content]
@@ -18,6 +15,9 @@ class JsonFile (TextFile):
 
     def _specific_content(self, fd, **kwargs):
         return json.load(fd)
+
+    def _ext(self):
+        return 'json'
 
     def __contains__(self, item):
         """
@@ -63,10 +63,10 @@ class JsonFile (TextFile):
         """
         return len(self.search(param))
 
-    def add_data(self, content_locator, new_index, new_value, to_list=False):
+    def add_data(self, content_locator=None, new_index=None, new_value=None, to_list=False):
         file_content = self.content()
         self.lock()
-        content = content[content_locator]
+        content = file_content[content_locator]
         tyc = type(content)
         if tyc == dict:
             content = self._add_data_dict(content, new_index, new_value)
@@ -74,7 +74,7 @@ class JsonFile (TextFile):
             content = self._add_data_list(content, new_value, new_index)
         elif tyc == str:
             content = self._add_data_str(content, new_value, to_list)
-        elif tyc ==  float or tyc == int:
+        elif tyc == float or tyc == int:
             content = self._add_data_num(content, new_value, to_list)
         elif tyc == bool:
             content = self._add_data_bool(content, new_value)
@@ -82,53 +82,10 @@ class JsonFile (TextFile):
             content = self._add_data_none(content, new_value)
 
         file_content[content_locator] = content
-        self.content = file_content
+        self._content = file_content
 
         self._dump_content()
         self.lock.release()
-
-
-
-    # def add_data(self, new_value, key=None, index=-1, inner_key=None, dict_index=None, to_list=False):
-    #
-    #     self.get_content()
-    #     self.lock.acquire()
-    #
-    #     if self.type is dict:
-    #         self._add_data_dict(key, new_value)
-    #     elif self.type is list:
-    #         self._add_data_list(new_value, index, inner_key, dict_index)
-    #     elif self.type is int:
-    #         self._add_data_num(new_value, to_list)
-    #     elif self.type is float:
-    #         self._add_data_num(new_value, to_list)
-    #     elif self.type is str:
-    #         self._add_data_str(new_value, to_list)
-    #     elif self.type is bool:
-    #         self._add_data_bool(new_value)
-    #     elif self.type is None:
-    #         self._add_data_none(new_value)
-    #
-    #     self._dump_content()
-    #     self.lock.release()
-
-    # def _delete_from_list(self, value, key, index, content: list):
-    #     if index is None:
-    #         raise Exception() # -> cant delete from list without index
-    #
-    #     delete_inx = False
-    #
-    #     for inx, val in enumerate(content):
-    #         if inx == index:
-    #             if key is not None and type(val) == dict:
-    #                 val = self._delete_from_dict(my_key=key, content=val, name_func='_delete_from_list')
-    #             elif key is not None and type(val) != dict:
-    #                 raise Exception() # -> When we are in the requested place in the list and the user entered KEY but there is no dictionary inside
-    #             else:
-    #                 delete_inx = True
-    #
-    #     if delete_inx:
-    #         self.content.pop(index)
 
 
     def remove_data(self, content_locator: str, key: str | int = None, index: int = None): #TODO: H
@@ -151,41 +108,7 @@ class JsonFile (TextFile):
         self.lock.release()
 
 
-
-
-        # if self.type == list:
-        #     self._delete_from_list()
-        # elif self.type == dict:
-        #     self._delete_from_dict()
-
-
-    #     if self.count(data) > 1:
-    #         raise Exception #tell user data appears more than once, can do manually or remove all
-    #
-    #     self.lock.acquire()
-    #     self.content()
-    #
-    #     if self.type == list:
-    #         for item in self.content:
-    #             if item == data:
-    #                 self.content.remove(data)
-    #             elif data in item:
-    #                 raise Exception #tell user data is tied into other data and should be removed manually
-    #     elif self.type == dict:
-    #         for key, value in self.content:
-    #             if key == data:
-    #                 del self.content[key]
-    #             elif value == data:
-    #                 self.content[key] = None
-    #             elif data in value:
-    #                 self.content.value.remove(data)
-    #
-    #
-    #     self._dump_content()
-    #     self.lock.release()
-    #     return self.content()
-    #
-    # # sub functions by json type
+    # sub functions by json type
 
     @staticmethod
     def _add_data_dict(content, key, new_value):

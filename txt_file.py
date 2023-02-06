@@ -9,7 +9,6 @@ class TxtFile (TextFile):
         super().__init__(file_path)
         # self._content = self.get_content()
         self.lines = self._content.readlines()
-        self._ext = 'txt'
 
     @staticmethod
     def _specific_content(fd):
@@ -35,7 +34,8 @@ class TxtFile (TextFile):
             raise ValueError("2 values must be TxtFile type")
 
         self.lock.acquire()
-        new_name = self.root + "\\" + self.file_name + "_" + other.file_name + \ self._ext
+
+        new_name = os.path.join(self.root, self.file_name + '_' + other.file_name + '.' + self._ext)
 
         if os.path.exists(new_name):
             raise PathAlreadyExistsError(new_name)
@@ -73,6 +73,10 @@ class TxtFile (TextFile):
         return findings
 
     def add_row(self, row):
+        """
+        add a row to txt file
+        :param row: content to be added
+        """
         self.lock.acquire()
         with open(self._file_path, "a") as fh:
             fh.write(f"\n"
@@ -80,4 +84,9 @@ class TxtFile (TextFile):
         self.lock.release()
 
     def count(self, val) -> int:
+        """count appearance of value in file"""
+
         return self.content.count(val)
+
+    def _ext(self):
+        return 'txt'

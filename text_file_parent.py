@@ -12,10 +12,13 @@ class TextFile(ABC):
 
         if not os.path.exists(self._file_path):
             raise FileNotFoundError()
-        # if self._ext() != self.get_extension():
-        #     raise TypeError
+        if self._ext() != self.get_extension():
+            raise TypeError
+        if os.path.getsize(self._file_path) > 50000000:
+            raise SizeError("File to large to handle with this packacge")
 
-        self._content = self.get_content()
+
+        self._content = self.load_content()
         self._file_size = os.stat(self._file_path).st_size
         self._root = os.path.dirname(self._file_path)
         self._base_name = os.path.basename(self._file_path)
@@ -27,9 +30,9 @@ class TextFile(ABC):
     def __str__(self):
         return str(self._content)
 
-    # @abstractmethod
-    # def _ext(self):
-    #     pass
+    @abstractmethod
+    def _ext(self):
+        pass
 
     @abstractmethod
     def _specific_content(self, fd):
@@ -43,7 +46,7 @@ class TextFile(ABC):
     def count(self, val) -> int:
         pass
 
-    def get_content(self):
+    def load_content(self):
         with open(self._file_path, 'r') as fd:
             content = self._specific_content(fd)
         return content
@@ -65,10 +68,6 @@ class TextFile(ABC):
     def content(self):
         return self._content
 
-    @content.setter
-    def content(self, value):
-        self._content = value #TODO: ASK Y
-
     @property
     def creation_time(self):
         return self._creation_t
@@ -80,10 +79,6 @@ class TextFile(ABC):
     @property
     def last_modified(self):
         return time.ctime(self._last_modified_t)
-    
-    # @last_modified.setter
-    # def last_modified(self, value):
-    #     pass
 
     @property
     def file_path(self):
