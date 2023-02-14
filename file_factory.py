@@ -1,17 +1,48 @@
 import json, csv
 import os.path
-from csv_file import CsvFile, LargeCsvFile
-from json_file import JsonFile, LargeJsonFile
-from txt_file import TxtFile, LargeTxtFile
+from csv_file import CsvFile
+from json_file import JsonFile
+from txt_file import TxtFile
 from exceptions import *
 
 
 class FileFactory:
 
     @staticmethod
-    def create_file(filetype, path, header: list=None):
+    def open_file(filetype: str, path: str, header: bool = True, delimiter: str = ',') -> CsvFile | \
+                                                                                                TxtFile | JsonFile:
         """
-        Creates new file
+        The function receives a file path, file type, and variables required for each file type,
+        and returns an instance of that file. If the file type is not one of the three specified -> txt, csv, json,
+        it will not be possible to use the library.
+        :param filetype: str (csv/json/txt).
+        :param path: str, file path.
+        :param header: bool, in csv -> if is there a header.
+        :param delimiter: Character or sequence of characters that separate columns.
+        :return: instance of CsvFile | TxtFile | JsonFile
+        """
+        max_size: int = 50
+        size = os.path.getsize(path)
+
+        # checks if the file is smaller than the max size
+        if size <= max_size:
+            if filetype == 'csv':
+                return CsvFile(path, delimiter, header)
+            elif filetype == 'txt':
+                return TxtFile(path)
+            elif filetype == 'json':
+                return JsonFile(path)
+            else:
+                raise InvalidTypeError()
+
+        else:
+            raise InvalidTypeError()
+
+    @staticmethod
+    def create_file(filetype: str, path: str, header: list=None) -> CsvFile | TxtFile | JsonFile:
+        """
+        Creates new file. The function receives a string representing the file type,
+        creates the new file, and returns an instance of the class corresponding to that file.
         :param filetype: str (csv/json/txt)
         :param path: str
         :param header: list[headers for csv]
@@ -34,30 +65,6 @@ class FileFactory:
             return JsonFile(path)
 
         else:
-            raise InvalidTypeError
+            raise InvalidTypeError()
 
-
-    @staticmethod
-    def create_instance(filetype, path, header=True, delimiter=',', max_size=50):
-        size = os.path.getsize(path)
-
-        if size <= max_size: #check if size comes in mb
-            if filetype == 'csv':
-                return CsvFile(path, delimiter, header)
-            elif filetype == 'txt':
-                return TxtFile(path)
-            elif filetype == 'json':
-                return JsonFile(path)
-            else:
-                raise InvalidTypeError
-
-        else:
-            if filetype == 'csv':
-                return LargeCsvFile(path, delimiter, header)
-            elif filetype == 'txt':
-                return LargeTxtFile(path)
-            elif filetype == 'json':
-                return LargeJsonFile(path)
-            else:
-                raise InvalidTypeError
 
