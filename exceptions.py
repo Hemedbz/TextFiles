@@ -11,8 +11,8 @@ class InvalidInputError(TextFileExceptions):
         super().__init__(f"{val} not in..")
 
 
-class TypeError(TextFileExceptions):
-    pass
+# class TypeError(TextFileExceptions):
+#     pass
 
 
 class PathAlreadyExistsError(TextFileExceptions):
@@ -39,8 +39,19 @@ class OutOfRange(TextFileExceptions):
     def __init__(self, param):
         super().__init__(f'{param} not in range')
 
+class KeyValueError(TextFileExceptions):
+    def __init__(self, msg):
+        super().__init__(msg)
+
+
+class IndexValueError(TextFileExceptions):
+    def __init__(self, msg):
+        super().__init__(msg)
+
+
 class InvalidTypeError(TextFileExceptions):
     pass
+
 
 class SizeError(TextFileExceptions):
     pass
