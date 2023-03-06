@@ -14,10 +14,10 @@ class JsonFile(TextFile):
         super().__init__(file_path)
         self.type = type(self.content)
 
-        # # if the type of the file is dict -> save list of key and list of value
-        # if self.type == 'dict':
-        #     self.keys = [key for key in self.content]
-        #     self.values = [self.content[key] for key in self.content]
+        # if the type of the file is dict -> save list of key and list of value
+        if self.type == 'dict':
+            self.keys = [key for key in self.content]
+            self.values = [self.content[key] for key in self.content]
 
     def _specific_content(self, fd):
         return json.load(fd)

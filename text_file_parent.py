@@ -40,13 +40,18 @@ class TextFile(ABC):
 
     @abstractmethod
     def search(self, val):
-        pass
+        raise Exception()
+
 
     @abstractmethod
     def count(self, val) -> int:
-        pass
+        raise Exception()
+
 
     def load_content(self):
+        """
+        The function loads the content of the file according to its type. -> csv, txt, json
+        """
         with open(self._file_path, 'r') as fd:
             content = self._specific_content(fd)
         return content
