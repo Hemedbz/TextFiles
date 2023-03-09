@@ -1,6 +1,8 @@
 from text_file_parent import TextFile
 import csv, os
 from exceptions import *
+from psycopg2 import connect
+
 
 # Menu for this file:
     # built-in functions
@@ -24,6 +26,7 @@ class CsvFile(TextFile):
         self._delimiter = delimiter
         self.as_dict = as_dict
         super().__init__(file_path)
+        self.connection = ""
 
 
     def __str__ (self):
@@ -39,7 +42,7 @@ class CsvFile(TextFile):
                 return True
         return False
 
-    def __add__(self, other):
+    def __add__(self, other : CsvFile):
         """
         Creates a new csv file which combines the two. Headers muse be identical.
         :param CsvFile, the file you wish to add
@@ -167,7 +170,7 @@ class CsvFile(TextFile):
 
             return csv_list[row_num][column_num - 1]
 
-    def search(self, val):
+    def search(self, value):
         """
         finds all appearances of given value in the file
         :param value to search
@@ -175,9 +178,9 @@ class CsvFile(TextFile):
         """
         locations = []
         for index, row in enumerate(self._content):
-            if val in row:
+            if value in row:
                 for i, v in enumerate(row):
-                    if v == val:
+                    if v == value:
                         locations.append((index, i))
         return locations
 
@@ -311,3 +314,48 @@ class CsvFile(TextFile):
         """
         return h1 == h2
 
+
+    def export_to_db(self):
+        """
+        Export csv file to db as new table.
+        To do this you must first provide connection information in function "set_connection"
+        """
+        columns_in_db = ""
+        if self._isheader:
+           columns_in_db = ",\n".join(self.header)
+        else:
+            columns_in_db = ",\n".join([n for n in range(self.shape()[1])])
+
+        sql_string =f'''
+                        CREATE TABLE {self.file_name} (
+                        id int primary key,
+                        {columns_in_db}
+                        ''')
+
+        with self.connection:
+            with self.connection.cursor() as cur:
+                cur.execute(sql_string)
+
+
+    def set_connection(self, host_name, port_num, database_name, user_name, password_str):
+        """
+        The function sets a connection to an existing database.
+
+        provide connection information to database,
+        for example:
+        host_name = "localhost",
+        port_num = 5432,
+        database_name = "example",
+        user_name = "postgres",
+        password_str = "password"
+        """
+
+        self.connection = connect(
+            host=host_name,
+            port=port_num,
+            database=database_name,
+            user=user_name,
+            password=password_str
+        )
+
+        return self.connection
