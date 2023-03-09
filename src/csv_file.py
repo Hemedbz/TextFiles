@@ -315,22 +315,22 @@ class CsvFile(TextFile):
         return h1 == h2
 
 
-    def export_to_db(self):
-        """
-        Export csv file to db as new table.
-        To do this you must first provide connection information in function "set_connection"
-        """
-        columns_in_db = ""
-        if self._isheader:
-           columns_in_db = ",\n".join(self.header)
-        else:
-            columns_in_db = ",\n".join([n for n in range(self.shape()[1])])
-
-        sql_string =f'''
-                        CREATE TABLE {self.file_name} (
-                        id int primary key,
-                        {columns_in_db}
-                        ''')
+    # def export_to_db(self):
+    #     """
+    #     Export csv file to db as new table.
+    #     To do this you must first provide connection information in function "set_connection"
+    #     """
+    #     columns_in_db = ""
+    #     if self._isheader:
+    #        columns_in_db = ",\n".join(self.header)
+    #     else:
+    #         columns_in_db = ",\n".join([n for n in range(self.shape()[1])])
+    #
+    #     sql_string =f'''
+    #                     CREATE TABLE {self.file_name} (
+    #                     id int primary key,
+    #                     {columns_in_db}
+    #                     ''')
 
         with self.connection:
             with self.connection.cursor() as cur:
