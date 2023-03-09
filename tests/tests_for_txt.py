@@ -1,5 +1,5 @@
 import unittest
-from txt_file import TxtFile
+from src.txt_file import TxtFile
 
 
 class TestTxtFile(unittest.TestCase):

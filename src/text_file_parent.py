@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import os
-from exceptions import *
+from src.exceptions import *
 import time
 from threading import Lock
 
@@ -15,7 +15,7 @@ class TextFile(ABC):
         if self._ext() != self.get_extension():
             raise TypeError
         if os.path.getsize(self._file_path) > 50000000:
-            raise SizeError("File to large to handle with this packacge")
+            raise SizeError("File to large to handle with this library")
 
 
         self._content = self.load_content()

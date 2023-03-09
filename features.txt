@@ -34,8 +34,6 @@ Methods for all text files:
      self.sum() -> column_name, rows range -> float
 
 
-
-
 JSON:
     self.keys()
     self.add_data()

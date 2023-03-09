@@ -1,7 +1,7 @@
 from text_file_parent import TextFile
 import json
-import re, os
-from exceptions import *
+import re
+from src.exceptions import *
 
 
 class JsonFile(TextFile):
@@ -28,8 +28,8 @@ class JsonFile(TextFile):
     def __contains__(self, item: str | int) -> bool:
         """
         Checks if value in json file
-        :param item: The value that you want to find.
-        :return: True or False
+        :param item
+        :return:
         """
         if self.type == dict and self._search_dict(item, dictionary=self.content) != [] or \
                 self.type == list and self._search_list(item, given_list=self.content) != []:
@@ -48,7 +48,7 @@ class JsonFile(TextFile):
         with open(self._file_path, 'w') as fd:
             json.dump(self.content, fd)
 
-    def search(self, param: str | int | float | bool | None) -> list:
+    def search(self, param) ->list:
         """
         search specific string or other content in json
         :param param: content to be searched

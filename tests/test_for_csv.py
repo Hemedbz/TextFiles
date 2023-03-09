@@ -1,6 +1,3 @@
-import unittest
-
-
 # class MyTestCase(unittest.TestCase):
     # def test_something(self):
     #     self.assertEqual(True, False)  # add assertion here
@@ -8,8 +5,6 @@ import unittest
 #
 # if __name__ == '__main__':
 #     unittest.main()
-
-import csv
 
 # with open ("/home/hemed/Desktop/fullstack_course/SQL/lesson_19_Jan_15th/imdb.csv", "r") as fh:
 #     content = list(csv.reader(fh))
@@ -22,7 +17,7 @@ import csv
 #     writer = csv.writer(fh)
 #     writer.writerows(content)
 
-from largecsvfile import LargeCsvFile
+from old_ignore.largecsvfile import LargeCsvFile
 
 file = LargeCsvFile("/home/hemed/Desktop/fullstack_course/SQL/lesson_19_Jan_15th/imdb.csv")
 # for row in file.content:
