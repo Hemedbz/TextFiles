@@ -59,12 +59,15 @@ class TxtFile (TextFile):
         else:
             return False
 
-    # def __iter__(self):
-    #     return self.words
-    #
-    # def __next__(self):
-    #     i += 1
-    #     return self.words[i]
+    def __iter__(self):
+        return iter(self.words)
+
+
+    def __str__(self):
+        return f"{self.file_name}\n" \
+               f"contains {len(self.lines)} lines\n" \
+               f"file creation time: {self.creation_time}\n" \
+               f"file last modified: {self.last_modified}"
 
     @property
     def words(self) -> list:

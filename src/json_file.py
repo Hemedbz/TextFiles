@@ -44,6 +44,11 @@ class JsonFile(TextFile):
         else:
             raise TypeError("Non Iterable")
 
+    def __str__(self):
+        return f"{self.file_name}\n" \
+               f"file creation time: {self.creation_time}\n" \
+               f"file last modified: {self.last_modified}"
+
     def _dump_content(self):
         with open(self._file_path, 'w') as fd:
             json.dump(self.content, fd)

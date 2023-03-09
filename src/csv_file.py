@@ -13,9 +13,11 @@ class CsvFile(TextFile):
 
     def __init__(self, file_path, delimiter=',', has_header=True, as_dict=False):
         """
-        :param file_path:
-        :param delimiter: default ","
-        :param header: bool -> does file have header
+        This class allows a convenient Python API for handling CSV files.
+        :param file_path: str
+        :param delimiter: default is ","
+        :param has_header: bool,  does file have header
+        :param as_dict: bool, would you prefer to access the information as a dictionary? Default is as False.
         """
 
         self._isheader = has_header
@@ -24,7 +26,7 @@ class CsvFile(TextFile):
         super().__init__(file_path)
 
 
-    def __str__(self):
+    def __str__ (self):
         return f"{self.file_name}\n" \
                f"contains {len(self)} rows\n" \
                f"header: {self.header}\n" \
@@ -39,9 +41,9 @@ class CsvFile(TextFile):
 
     def __add__(self, other):
         """
-        Creates new csv file which is combination of two other files
-        :param other: second csv file object
-        :return: new csv file as object (after creating)
+        Creates a new csv file which combines the two. Headers muse be identical.
+        :param CsvFile, the file you wish to add
+        :return: CsvFIle, the new file
         """
 
         # ensure other is csv
@@ -75,8 +77,7 @@ class CsvFile(TextFile):
 
     def __len__(self):
         """
-
-        :return: number of rows in file without header
+        :return: number of rows in file, not including header
         """
         if self._isheader:
             num_of_rows = -1
@@ -106,7 +107,7 @@ class CsvFile(TextFile):
     @property
     def header(self) -> list | None:
         """
-        :return: the header of the csv file
+        :return: list of str, the header of the csv file
         """
         if self._isheader:
             return self.content[0]
@@ -168,8 +169,8 @@ class CsvFile(TextFile):
 
     def search(self, val):
         """
-        finds all appearances of parameter
-        :param val to search
+        finds all appearances of given value in the file
+        :param value to search
         :return: []list of tuples(row_num, column_num)
         """
         locations = []
@@ -180,10 +181,18 @@ class CsvFile(TextFile):
                         locations.append((index, i))
         return locations
 
-    def count(self, val) -> int:
-        return len(self.search(val))
+    def count(self, value) -> int:
+        """
+        Counts appearances of specific value in file
+        :param value:
+        :return: int, number of appearances
+        """
+        return len(self.search(value))
 
     def add_row(self, row_to_add: list):
+        """Add a row to csv file, at end of file
+        :param list, in which every item will be placed in a column by order
+        """
         self.lock.acquire()
         with open(self.file_path, 'a') as f:
             writer = csv.writer(f, delimiter=self._delimiter)
@@ -193,10 +202,10 @@ class CsvFile(TextFile):
 
     def delete_row(self, row_num=None, row_content=None):
         """
+        Deletes a row of data from csv file.
         Provide either row number or row content to delete
         :param row_num: int
         :param row_content: list
-        :return:
         """
         self.lock.acquire()
         content = self.content
@@ -216,7 +225,7 @@ class CsvFile(TextFile):
 
         :param cell_row: int
         :param cell_column: int
-        :param new_value:
+        :param new_value: What should be in the cell
 
         """
         if cell_row > len(self):
@@ -237,9 +246,10 @@ class CsvFile(TextFile):
 
     def average(self, n, beginning_row=0, end_row=None):
         """
+        Calculates the average of values in a column. Only relevant for columns consisting of numbers.
          :param n: column serial number
-         :param beginning_row: row serial number
-         :param end_row: row serial number
+         :param beginning_row: row serial number, default is all file.
+         :param end_row: row serial number, default is all file.
          :return: float
          """
         sum_num = self.sum_column(n, beginning_row, end_row if end_row is not None else len(self))
@@ -248,10 +258,10 @@ class CsvFile(TextFile):
 
     def sum_column(self, n, beginning_row=0, end_row=None):
         """
-
+        Calculates the sum of values in a column, only relevant for columns consisting of numbers.
         :param n: column serial number
-        :param beginning_row: row serial number
-        :param end_row: row serial number
+        :param beginning_row: row serial number, default is all file.
+        :param end_row: row serial number, default is all file.
         :return: float
         """
         sum_num = 0
