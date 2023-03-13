@@ -1,3 +1,5 @@
+import psycopg2
+
 from text_file_parent import TextFile
 import csv, os
 from exceptions import *
@@ -5,10 +7,10 @@ from psycopg2 import connect
 
 
 # Menu for this file:
-    # built-in functions
-    # public functions - read
-    # math functions - write
-    # private functions
+# built-in functions
+# public functions - read
+# math functions - write
+# private functions
 
 
 class CsvFile(TextFile):
@@ -26,10 +28,9 @@ class CsvFile(TextFile):
         self._delimiter = delimiter
         self.as_dict = as_dict
         super().__init__(file_path)
-        self.connection = ""
+        self.connection = {}
 
-
-    def __str__ (self):
+    def __str__(self):
         return f"{self.file_name}\n" \
                f"contains {len(self)} rows\n" \
                f"header: {self.header}\n" \
@@ -42,7 +43,7 @@ class CsvFile(TextFile):
                 return True
         return False
 
-    def __add__(self, other : CsvFile):
+    def __add__(self, other: CsvFile):
         """
         Creates a new csv file which combines the two. Headers muse be identical.
         :param CsvFile, the file you wish to add
@@ -257,7 +258,7 @@ class CsvFile(TextFile):
          """
         sum_num = self.sum_column(n, beginning_row, end_row if end_row is not None else len(self))
         divider = len(self.content[beginning_row:end_row if end_row is not None else len(self)])
-        return sum_num/divider
+        return sum_num / divider
 
     def sum_column(self, n, beginning_row=0, end_row=None):
         """
@@ -314,30 +315,77 @@ class CsvFile(TextFile):
         """
         return h1 == h2
 
+    def export_to_db(self, table_name: str, column_type: list[str], header: list[str] = None,
+                     not_null: list[bool] = None, unique: list[bool] = None, **kwargs):  # TODO: Y
+        """
+        Export csv file to db as new table.
+        To do this you must first provide connection information in function "set_connection"
+        [first name, last name, ]
+        []
+        []
+        """
+        num_columns = []
+        columns_in_db = []
+        if self.header:
+            for inx, column_name in enumerate(self.header):
+                num_columns.append('%s')
+                text_column = column_name + " " + column_type[inx]
+                if not_null[inx]:
+                    text_column += " " + "not null"
+                if unique[inx]:
+                    text_column += " " + "unique"
+                columns_in_db.append(text_column)
+        else:
+            for inx, column_name in enumerate(header):
+                num_columns.append('%s')
+                text_column = column_name + " " + column_type[inx]
+                if not_null[inx]:
+                    text_column += " " + "not null"
+                if unique[inx]:
+                    text_column += " " + "unique"
+                columns_in_db.append(text_column)
 
-    # def export_to_db(self):
-    #     """
-    #     Export csv file to db as new table.
-    #     To do this you must first provide connection information in function "set_connection"
-    #     """
-    #     columns_in_db = ""
-    #     if self._isheader:
-    #        columns_in_db = ",\n".join(self.header)
-    #     else:
-    #         columns_in_db = ",\n".join([n for n in range(self.shape()[1])])
-    #
-    #     sql_string =f'''
-    #                     CREATE TABLE {self.file_name} (
-    #                     id int primary key,
-    #                     {columns_in_db}
-    #                     ''')
+        placeholders = tuple(table_name) + tuple(columns_in_db)
+        sql_query = f"""
+                    create table %s(
+                    id serial primary key,
+                    {",".join(num_columns)}
+                    );""" % (tuple(placeholders))
+        try:
+            with psycopg2.connect(**self.connection) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(sql_query)
+                    if cur.rowcount == 1:
+                        pass
+                    else:
+                        raise Exception('The operation was not performed, '
+                                        'probably some of the parameters are incorrect')
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
 
-        with self.connection:
-            with self.connection.cursor() as cur:
-                cur.execute(sql_string)
+        # columns_in_db = ""
+        # if self._isheader:
+        #     columns_in_db = ",\n".join(self.header)
+        #
+        # else:
+        #     columns_in_db = ",\n".join([n for n in range(self.shape()[1])])
 
+        # sql_string =f'''
+        #                 CREATE TABLE {self.file_name} (
+        #                 id int primary key,
+        #                 {columns_in_db}
+        #                 ''')
 
-    def set_connection(self, host_name, port_num, database_name, user_name, password_str):
+        # with self.connection:
+        #     with self.connection.cursor() as cur:
+        #         # cur.execute(sql_string)
+        #         cur.execute(sql_query)
+        #         result = cur.fetchall()
+
+    def set_connection(self, host_name, port_num, database_name, user_name, password_str) -> dict:
         """
         The function sets a connection to an existing database.
 
@@ -350,12 +398,18 @@ class CsvFile(TextFile):
         password_str = "password"
         """
 
-        self.connection = connect(
-            host=host_name,
-            port=port_num,
-            database=database_name,
-            user=user_name,
-            password=password_str
-        )
-
+        # self.connection = connect(
+        #     host=host_name,
+        #     port=port_num,
+        #     database=database_name,
+        #     user=user_name,
+        #     password=password_str
+        # )
+        self.connection = {
+            'host': host_name,
+            'port': port_num,
+            'database': database_name,
+            'user': user_name,
+            'password': password_str
+        }
         return self.connection
