@@ -4,6 +4,11 @@ from text_file_parent import TextFile
 import csv, os
 from exceptions import *
 from psycopg2 import connect
+# 'annotations' enables class typing within its own class
+from __future__ import annotations
+
+# advanced typing - Optional[Type] = Type | None, Iterable = iterator protocol implemented
+from typing import Optional, Iterable
 
 
 # Menu for this file:
