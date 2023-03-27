@@ -25,18 +25,18 @@ class JsonFile(TextFile):
     def _ext(self):
         return 'json'
 
-    def __contains__(self, item: str | int) -> bool:
-        """
-        Checks if value in json file
-        :param item
-        :return:
-        """
-        if self.type == dict and self._search_dict(item, dictionary=self.content) != [] or \
-                self.type == list and self._search_list(item, given_list=self.content) != []:
-            return True
-        elif item == self.content:
-            return True
-        return False
+    # def __contains__(self, item: str | int) -> bool:
+    #     """
+    #     Checks if value in json file
+    #     :param item
+    #     :return:
+    #     """
+    #     if self.type == dict and self._search_dict(item, dictionary=self.content) != [] or \
+    #             self.type == list and self._search_list(item, given_list=self.content) != []:
+    #         return True
+    #     elif item == self.content:
+    #         return True
+    #     return False
 
     def __iter__(self):
         if self.type in [dict, list, str]:
@@ -197,31 +197,27 @@ class JsonFile(TextFile):
     #     content = new_value
     #     return content
 
-    def _search_dict(self, param: str | int | float | bool | None, dictionary: dict) -> list:
+    def _search_dict(self, param, dictionary):
         findings = []
         for key, value in dictionary.items():
             if param == key or param in value:
                 findings.append({key: value})
+            elif isinstance(value, list):
+                if param in value:
+                    findings.append(value, value.index())
             elif isinstance(value, dict):
-                temp = self._search_dict(param, value)
-                if temp:
-                    findings.append(temp)
-                # findings.extend(self._search_dict(param, value))
+                findings.extend(self._search_dict(param, value))
         return findings
 
-    def _search_list(self, value: str | int | float | bool | None, given_list: list) -> list:
+    def _search_list(self, value, l):
         findings = []
-        for index, val in enumerate(given_list):
-            if val == value:
-                findings.append((index, val))
-            elif isinstance(val, dict):
-                temp = self._search_dict(value, val)
-                if temp:
-                    findings.append(temp)
-            elif isinstance(val, list):
-                temp = self._search_list(value, val)
-                if temp:
-                    findings.extend(temp)
+        for i in l:
+            if i == value:
+                findings.append(i)
+            elif isinstance(i, dict):
+                findings.append(self._search_dict(value, i))
+            elif isinstance(i, list):
+                findings.extend(self._search_list(value, i))
         return findings
 
     def _search_identical(self, value: str | int | float | bool | None) -> list:
@@ -232,3 +228,4 @@ class JsonFile(TextFile):
 
     def _search_str(self, value: str | int | float | bool | None) -> list:
         return re.findall(value, self.content)
+

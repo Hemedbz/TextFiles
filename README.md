@@ -2,7 +2,8 @@
 A convenient Python API for working with the text files CSV, JSON, TXT
 This is a shared project with Yael Ben Yair `https://github.com/YaelBenYair`
 
-The library allows handling csv, txt and json files easily from within Python. Just five the `TextFileFactory` class a file path as a parameter, and the class is ready to use.
+The library allows handling csv, txt and json files easily from within Python.
+
 ## Installation
 pip install textfiles
 
@@ -14,4 +15,19 @@ pip install textfiles
     
     
 ### examples:
+
+#### CsvFile.update_cell()
+    my_csv = CsvFile('/path/to/my/csv/file.csv')
+    my_csv.update_cell(column=3, row=2, value='New content')
+
+#### JsonFile.search()
+    with open ("example.json", "w") as f:
+        json.dump(f, {"State": "New York", "cities": ["New York", "Albeny", "New Paltz"]})
+
+
+    my_json = JsonFile('/path/to/my/json/file.json')
+    new = my_json.search("new")
+    print(new)
+
+    result
 
