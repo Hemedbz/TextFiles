@@ -50,7 +50,7 @@ Note - When creating a CSV file, it is mandatory to pass a header.
     self.get_content()
     self.search()
     self.count()
-    ```
+```
     
     
 ### examples:
@@ -59,7 +59,7 @@ Note - When creating a CSV file, it is mandatory to pass a header.
 ```python
     my_csv = CsvFile('/path/to/my/csv/file.csv')
     my_csv.update_cell(column=3, row=2, value='New content')
-    ```
+```
 
 #### JsonFile.search()
 ```python
@@ -72,5 +72,5 @@ Note - When creating a CSV file, it is mandatory to pass a header.
     print(new)
 
     result
-    ```
+```
 
