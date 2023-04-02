@@ -218,10 +218,3 @@ class JsonFile(TextFile):
     def _add_data_bool(content: bool, new_value: int | str | list | dict | bool | float) -> list:
         content = [content, new_value]
         return content
-if __name__ == '__main__':
-    with open("example.json", "w") as f:
-        json.dump ({"State": "New York", "cities": ["New York", "Albeny", "New Paltz"]}, f)
-
-    my_json = JsonFile('/path/to/my/json/file.json')
-    new = my_json.search("new")
-    print(new)
