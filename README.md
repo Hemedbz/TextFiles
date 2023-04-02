@@ -8,6 +8,7 @@ The library allows handling csv, txt and json files easily from within Python.
 pip install textfiles
 
 ## How to use:
+
 ### Main functions:
     self.get_content()
     self.search()

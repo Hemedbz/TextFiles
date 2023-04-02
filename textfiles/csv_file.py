@@ -1,8 +1,6 @@
 from text_file_parent import TextFile
 import csv, os
 from exceptions import *
-from psycopg2 import connect
-
 
 # Menu for this file:
     # built-in functions
@@ -313,49 +311,3 @@ class CsvFile(TextFile):
         :return: bool
         """
         return h1 == h2
-
-
-    # def export_to_db(self):
-    #     """
-    #     Export csv file to db as new table.
-    #     To do this you must first provide connection information in function "set_connection"
-    #     """
-    #     columns_in_db = ""
-    #     if self._isheader:
-    #        columns_in_db = ",\n".join(self.header)
-    #     else:
-    #         columns_in_db = ",\n".join([n for n in range(self.shape()[1])])
-    #
-    #     sql_string =f'''
-    #                     CREATE TABLE {self.file_name} (
-    #                     id int primary key,
-    #                     {columns_in_db}
-    #                     ''')
-
-        with self.connection:
-            with self.connection.cursor() as cur:
-                cur.execute(sql_string)
-
-
-    def set_connection(self, host_name, port_num, database_name, user_name, password_str):
-        """
-        The function sets a connection to an existing database.
-
-        provide connection information to database,
-        for example:
-        host_name = "localhost",
-        port_num = 5432,
-        database_name = "example",
-        user_name = "postgres",
-        password_str = "password"
-        """
-
-        self.connection = connect(
-            host=host_name,
-            port=port_num,
-            database=database_name,
-            user=user_name,
-            password=password_str
-        )
-
-        return self.connection

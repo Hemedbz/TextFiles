@@ -1,7 +1,7 @@
 from text_file_parent import TextFile
 import json
 import re
-from src.exceptions import *
+from exceptions import *
 
 
 class JsonFile(TextFile):
@@ -60,14 +60,7 @@ class JsonFile(TextFile):
         :return: list of findings
         """
 
-        if self.type is dict:
-            return self._search_dict(param, dictionary=self.content)
-        elif self.type is list:
-            return self._search_list(param, given_list=self.content)
-        elif self.type is str:
-            return self._search_str(param)
-        else:
-            return self._search_identical(param)
+ד
 
     def count(self, param):
         """
@@ -192,43 +185,3 @@ class JsonFile(TextFile):
     def _add_data_bool(content: bool, new_value: int | str | list | dict | bool | float) -> list:
         content = [content, new_value]
         return content
-
-    # def _add_data_none(content: None, new_value):
-    #     content = new_value
-    #     return content
-
-    def _search_dict(self, param: str | int | float | bool | None, dictionary: dict) -> list:
-        findings = []
-        for key, value in dictionary.items():
-            if param == key or param in value:
-                findings.append({key: value})
-            elif isinstance(value, dict):
-                temp = self._search_dict(param, value)
-                if temp:
-                    findings.append(temp)
-                # findings.extend(self._search_dict(param, value))
-        return findings
-
-    def _search_list(self, value: str | int | float | bool | None, given_list: list) -> list:
-        findings = []
-        for index, val in enumerate(given_list):
-            if val == value:
-                findings.append((index, val))
-            elif isinstance(val, dict):
-                temp = self._search_dict(value, val)
-                if temp:
-                    findings.append(temp)
-            elif isinstance(val, list):
-                temp = self._search_list(value, val)
-                if temp:
-                    findings.extend(temp)
-        return findings
-
-    def _search_identical(self, value: str | int | float | bool | None) -> list:
-        if value == self.content:
-            return [self.content]
-        else:
-            return []
-
-    def _search_str(self, value: str | int | float | bool | None) -> list:
-        return re.findall(value, self.content)

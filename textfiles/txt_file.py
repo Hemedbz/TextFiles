@@ -1,5 +1,5 @@
-from src.text_file_parent import TextFile
-from src.exceptions import *
+from text_file_parent import TextFile
+from exceptions import *
 import os
 
 

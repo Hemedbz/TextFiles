@@ -1,12 +1,12 @@
 import json, csv
 import os.path
-from src.csv_file import CsvFile
+from old_ignore.src.csv_file import CsvFile
 from json_file import JsonFile
 from textfiles.txt_file import TxtFile
-from src.exceptions import *
+from old_ignore.src.exceptions import *
 
 
-class TextFileFactory:
+class TextFile:
 
     @staticmethod
     def make_file_instance(path: str, filetype: str, has_header: bool = True, delimiter: str = ',', max_size: int = 50)\

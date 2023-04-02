@@ -1,5 +1,5 @@
 import unittest
-from src.txt_file import TxtFile
+from old_ignore.src.txt_file import TxtFile
 
 
 class TestTxtFile(unittest.TestCase):

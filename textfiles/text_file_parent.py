@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import os
-from src.exceptions import *
+from exceptions import *
 import time
 from threading import Lock
 
