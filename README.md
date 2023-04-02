@@ -42,7 +42,7 @@ file = TextFileFactory.make_file('csv', 'path/to/file.csv', ['Header1', 'Header2
 file = TextFileFactory.make_file('txt', 'path/to/file.txt')
 file = TextFileFactory.make_file('json', 'path/to/file.json')
 ```
-Note
+Note - When creating a CSV file, it is mandatory to pass a header.
 
 
 ### Main functions:
