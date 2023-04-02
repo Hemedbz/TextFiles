@@ -100,8 +100,8 @@ class JsonFile(TextFile):
 
     def _locator(self, locator: str) -> int | str | list | dict | bool | float:
         dict_locator = {}
-        exec(f"dict_locator[content] = self.content{locator}")
-        return dict_locator[content]
+        exec(f"dict_locator['content'] = self.content{locator}")
+        return dict_locator['content']
 
     def add_data(self, content_locator: str = None, new_index: int = None, new_key: str = None,
                  new_value: int | str | list | dict | bool | float = None, to_list=False):
