@@ -5,7 +5,9 @@ This is a shared project with Yael Ben Yair `https://github.com/YaelBenYair`
 The library allows handling csv, txt and json files easily from within Python.
 
 ## Installation
+```terminal
 pip install textfiles
+```
 
 ## How to use:
 
