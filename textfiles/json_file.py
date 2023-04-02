@@ -31,8 +31,8 @@ class JsonFile(TextFile):
         :param item
         :return:
         """
-        if self.type == dict and self._search_dict(item, dictionary=self.content) != [] or \
-                self.type == list and self._search_list(item, given_list=self.content) != []:
+        if self.type == dict and self._search_dict(item, data_dict=self.content) != [] or \
+                self.type == list and self._search_list(item, data_list=self.content) != []:
             return True
         elif item == self.content:
             return True
@@ -53,14 +53,12 @@ class JsonFile(TextFile):
         with open(self._file_path, 'w') as fd:
             json.dump(self.content, fd)
 
-    def search(self, param) ->list:
+    def search(self, query) ->list:
         """
         search specific string or other content in json
         :param param: content to be searched
         :return: list of findings
         """
-
-    def search(self, query):
         if isinstance(self.content, list):
             return self._search_list(self.content, query)
         elif isinstance(self.content, dict):
@@ -68,12 +66,11 @@ class JsonFile(TextFile):
         else:
             raise TypeError("Unsupported data type")
 
-    @staticmethod
-    def _search_list(data_list, query):
+    def _search_list(self,data_list, query):
         findings = []
         for i, item in enumerate(data_list):
             if isinstance(item, (list, dict)):
-                sublist_findings = search(item, query)
+                sublist_findings = self.search(item, query)
                 if sublist_findings:
                     findings.append({f"index[{i}]": sublist_findings})
             elif isinstance(query, str) and query.lower() in item.lower() or \
@@ -81,12 +78,11 @@ class JsonFile(TextFile):
                 findings.append({f"index[{i}]": item})
         return findings
 
-    @staticmethod
-    def _search_dict(data_dict, query):
+    def _search_dict(self,data_dict, query):
         findings = []
         for key, value in data_dict.items():
             if isinstance(value, (list, dict)):
-                sublist_findings = search(value, query)
+                sublist_findings = self.search(value, query)
                 if sublist_findings:
                     findings.append({key: sublist_findings})
             elif (isinstance(query, str) and query.lower() in value.lower() or
