@@ -50,9 +50,11 @@ class IndexValueError(TextFileExceptions):
 
 
 class InvalidTypeError(TextFileExceptions):
-    pass
+        def __init__(self, param):
+        super().__init__(f'{param} file not supported')
 
 
 class SizeError(TextFileExceptions):
-    pass
+        def __init__(self, param):
+        super().__init__(f'{param} is too large')
 
