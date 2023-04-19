@@ -1,9 +1,9 @@
 import json, csv
 import os.path
-from old_ignore.src.csv_file import CsvFile
+from csv_file import CsvFile
 from json_file import JsonFile
-from textfiles.txt_file import TxtFile
-from old_ignore.src.exceptions import *
+from txt_file import TxtFile
+from exceptions import *
 
 
 class TextFile:
@@ -29,7 +29,7 @@ class TextFile:
 
         # ensures file is within size limits
         if size > max_size:
-            raise SizeError
+            raise SizeError()
 
         # create instance
         if filetype == 'csv':
