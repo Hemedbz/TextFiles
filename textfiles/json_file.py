@@ -31,8 +31,8 @@ class JsonFile(TextFile):
         :param item
         :return:
         """
-        if self.type == dict and self._search_dict(item, data_dict=self.content) != [] or \
-                self.type == list and self._search_list(item, data_list=self.content) != []:
+        if self.type == dict and self._search_dict(self.content, item) != [] or \
+                self.type == list and self._search_list(self.content, item) != []:
             return True
         elif item == self.content:
             return True
@@ -66,7 +66,7 @@ class JsonFile(TextFile):
         else:
             raise TypeError("Unsupported data type")
 
-    def _search_list(self,data_list, query):
+    def _search_list(self, data_list, query):
         findings = []
         for i, item in enumerate(data_list):
             if isinstance(item, (list, dict)):
@@ -78,7 +78,7 @@ class JsonFile(TextFile):
                 findings.append({f"index[{i}]": item})
         return findings
 
-    def _search_dict(self,data_dict, query):
+    def _search_dict(self, data_dict, query):
         findings = []
         for key, value in data_dict.items():
             if isinstance(value, (list, dict)):
