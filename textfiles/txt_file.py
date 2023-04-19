@@ -39,7 +39,7 @@ class TxtFile (TextFile):
         if os.path.exists(new_name):
             raise PathAlreadyExistsError(new_name)
 
-        with open (new_name, 'x') as fh:
+        with open(new_name, 'x') as fh:
             fh.write(self._content + other._content)
 
         self.lock.release()
