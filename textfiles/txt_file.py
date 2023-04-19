@@ -11,7 +11,7 @@ class TxtFile (TextFile):
 
     def __init__(self, file_path):
         super().__init__(file_path)
-        self.lines = self._readlines()
+        self.lines = self._read_lines()
 
     @staticmethod
     def _specific_content(fd):
