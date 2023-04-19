@@ -1,3 +1,4 @@
+from __future__ import annotations
 from text_file_parent import TextFile
 import csv, os
 from exceptions import *
