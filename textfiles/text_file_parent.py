@@ -77,10 +77,6 @@ class TextFile(ABC):
     def creation_time(self):
         return self._creation_t
 
-    # @creation_time.setter
-    # def creation_time(self, value):
-    #     pass
-
     @property
     def last_modified(self):
         return time.ctime(self._last_modified_t)
