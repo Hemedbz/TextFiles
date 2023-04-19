@@ -17,7 +17,7 @@ class TxtFile (TextFile):
     def _specific_content(fd):
         return fd.read()
 
-    def _readlines(self):
+    def _read_lines(self):
         with open(self.file_path) as fh:
             lines = fh.readlines()
         return lines
