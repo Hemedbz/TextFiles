@@ -1,6 +1,5 @@
 # TextFiles v0.0.1
 A convenient Python API for working with the text files CSV, JSON, TXT
-This is a shared project with Yael Ben Yair `https://github.com/YaelBenYair`
 
 The library allows handling csv, txt and json files easily from within Python.
 

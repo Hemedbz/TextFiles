@@ -8,7 +8,6 @@ class JsonFile(TextFile):
 
     def __init__(self, file_path: str):
         """
-
         :param file_path: str
         """
         super().__init__(file_path)
