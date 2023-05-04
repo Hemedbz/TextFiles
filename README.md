@@ -1,4 +1,4 @@
-# TextFiles v0.0.1
+# TextFiles v0.0.3
 A convenient Python API for working with the text files CSV, JSON, TXT
 
 The library allows handling csv, txt and json files easily from within Python.
