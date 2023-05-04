@@ -1,7 +1,7 @@
-from text_file_parent import TextFile
+from .text_file_parent import TextFile
 import json
 import re
-from exceptions import *
+from .exceptions import *
 
 
 class JsonFile(TextFile):

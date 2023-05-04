@@ -1,9 +1,9 @@
 import json, csv
 import os.path
-from csv_file import CsvFile
-from json_file import JsonFile
-from txt_file import TxtFile
-from exceptions import *
+from .csv_file import CsvFile
+from .json_file import JsonFile
+from .txt_file import TxtFile
+from .exceptions import *
 
 
 class TextFile:

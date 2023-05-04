@@ -4,7 +4,7 @@ import os
 with open("README.md", encoding="utf-8") as fh:
     readme = "\n" + fh.read()
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 DESCRIPTION = 'Managing the text files txt, csv and json'
 LONG_DESCRIPTION = 'A package that includes friendly API for using the text files in the formats csv, ' \
                    'txt and json.'

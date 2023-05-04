@@ -1,5 +1,5 @@
-from text_file_parent import TextFile
-from exceptions import *
+from .text_file_parent import TextFile
+from .exceptions import *
 import os
 
 
