@@ -29,7 +29,7 @@ class TextFile:
 
         # ensures file is within size limits
         if size > max_size:
-            raise SizeError()
+            raise SizeError(path)
 
         # create instance
         if filetype == 'csv':
@@ -40,7 +40,7 @@ class TextFile:
             return JsonFile(path)
 
         else:
-            raise InvalidTypeError()
+            raise InvalidTypeError(filetype)
 
 
     @staticmethod
@@ -66,8 +66,8 @@ class TextFile:
 
         elif filetype == 'json':
             with open(path, 'w') as js:
-                json.dump(js, None)
+                json.dump(None, js)
             return JsonFile(path)
 
         else:
-            raise InvalidTypeError()
+            raise InvalidTypeError(filetype)
