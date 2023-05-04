@@ -9,7 +9,7 @@ from .exceptions import *
 class TextFile:
 
     @staticmethod
-    def make_file_instance(path: str, filetype: str, has_header: bool = True, delimiter: str = ',', max_size: int = 50)\
+    def make_file_instance(filetype: str, path: str, has_header: bool = True, delimiter: str = ',', max_size: int = 50)\
             ->\
             CsvFile | TxtFile | JsonFile:
         """

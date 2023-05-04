@@ -1,4 +1,4 @@
-# TextFiles v0.0.6
+# TextFiles v0.0.7
 A convenient Python API for working with the text files CSV, JSON, TXT
 
 The library allows handling csv, txt and json files easily from within Python.
@@ -29,9 +29,9 @@ Examples: Here are some examples of how to use TextFile:
 To create an instance of an existing file:
 
 ```python
-file = TextFile.make_file_instance('path/to/file.csv', 'csv', has_header=True, delimiter=',')
-file = TextFile.make_file_instance('path/to/file.txt', 'txt')
-file = TextFile.make_file_instance('path/to/file.json', 'json')
+file = TextFile.make_file_instance('csv', 'path/to/file.csv', has_header=True, delimiter=',')
+file = TextFile.make_file_instance('txt', 'path/to/file.txt')
+file = TextFile.make_file_instance('json', 'path/to/file.json')
 ```
 
 To create a new file:

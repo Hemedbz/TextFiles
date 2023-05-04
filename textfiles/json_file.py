@@ -118,6 +118,7 @@ class JsonFile(TextFile):
         """
 
         file_content = self.content
+        file_type = ''
         self.lock.acquire()
 
         # check if content_locator is None - if True insert to content the whole content
@@ -132,8 +133,10 @@ class JsonFile(TextFile):
             if new_key is None:
                 raise KeyError("For dictionary type must insert a key")
             content = self._add_data_dict(content, new_key, new_value)
+            file_type = {}
         elif tyc == list:
             content = self._add_data_list(content, new_index, new_value)
+            file_type = []
         elif tyc == str:
             content = self._add_data_str(content, new_value, to_list)
         elif tyc == float or tyc == int:
@@ -144,7 +147,11 @@ class JsonFile(TextFile):
             content = new_value
             # self._add_data_none(content, new_value)
 
-        exec(f"file_content{content_locator} = content\nself._content = file_content")
+        if self.content is None:
+            self._content = content
+        else:
+            exec(f"file_content{content_locator} = content\nself._content = file_content")
+        # exec(f"self._content[{content_locator}] = content")
 
         self._dump_content()
         self.lock.release()
